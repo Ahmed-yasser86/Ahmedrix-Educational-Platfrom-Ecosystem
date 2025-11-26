@@ -1,0 +1,37 @@
+@model OnlineCoursesPlatform.Entities.CategoryItem
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>CategoryItem</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTimeItemAdded)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateTimeItemAdded)
+        </dd>
+    </dl>
+</div>
+<div>
+
+    <a asp-controller="CategoryItems" asp-area="Admin" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-controller="CategoryItems" asp-area="Admin" asp-action="Index" asp-route-CategoryId="@Model.CategoryId">Back To List</a>
+</div>

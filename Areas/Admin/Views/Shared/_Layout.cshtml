@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ahmendrix</title>
+
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/fontawesome/css/all.min.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin-panel.css" />
+
+    <!-- ADD THIS LINE - This was missing! -->
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="futuristic-body">
+    <!-- AI Assistant Badge (Floating) -->
+    <div class="ai-assistant-badge" id="aiAssistant">
+        <i class="fas fa-brain"></i>
+        <span class="ai-pulse"></span>
+    </div>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm futuristic-navbar fixed-top">
+            <div class="container">
+                <!-- Logo with Glow Effect -->
+                <a class="navbar-brand futuristic-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="logo-container">
+                        <img src="/images/TechTreeLogo.jpeg" height="45" alt="TechTree">
+                        <span class="logo-glow"></span>
+                    </div>
+                </a>
+
+                <button class="navbar-toggler futuristic-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link futuristic-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                                <span class="link-glow"></span>
+                            </a>
+                        </li>
+
+                        <partial name="_AdminMenuPartial" />
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content with Gradient Background -->
+    <div class="container futuristic-container">
+        <main role="main" class="pb-3 main-default futuristic-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Modern Footer -->
+    <footer class="futuristic-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <p class="copyright">
+                        <i class="fas fa-code"></i> 2026 TechTree Platform - AI-Powered Learning
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">
+                        <i class="fas fa-shield-alt"></i> Privacy Policy
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-gradient"></div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script> <!-- optional, for other scripts -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/admin-panel.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
