@@ -49,6 +49,9 @@ namespace OnlineCoursesPlatform.Controllers
 
                 if (!result.Succeeded)
                 {
+
+                    var EroreList = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    ModelState.AddModelError("", "Invalid login attempt" + EroreList);
                     model.LoginFailedMessage = "Invalid login attempt.";
                     return PartialView("_UserLoginPartial", model);
                 }
