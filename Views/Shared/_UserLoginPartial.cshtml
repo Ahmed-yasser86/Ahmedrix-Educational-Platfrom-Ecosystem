@@ -1,0 +1,29 @@
+﻿@model OnlineCoursesPlatform.Models.LoginModel
+
+<form id="UserLoginForm" asp-controller="UserAuth" asp-action="Login">
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="LoginInValid" />
+
+        <div class="mb-3 row">
+            <label asp-for="Email" class="col-md-4 col-form-label fw-semibold"></label>
+            <div class="col-md-8">
+                <input asp-for="Email" placeholder="Email Address" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="Password" class="col-md-4 col-form-label fw-semibold"></label>
+            <div class="col-md-8">
+                <input asp-for="Password" type="password" placeholder="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Log in</button>
+    </div>
+</form>
