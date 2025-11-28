@@ -16,17 +16,10 @@
     }
     else
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <!-- LOGIN MODAL TRIGGER -->
-            <a class="nav-link text-dark"
-               href="#"
-               data-bs-toggle="modal"
-               data-bs-target="#UserLoginModal">
-                Login
-            </a>
-        </li>
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"
+           data-bs-toggle="modal" data-bs-target="#UserLoginModal">
+            <i class="fas fa-sign-in-alt mr-1 text-info"></i>Login
+        </a>
+
     }
 </ul>

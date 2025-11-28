@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,32 +9,16 @@
 </div>
 
 
-<div class="modal fade" id="UserLoginModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Login</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <partial name="_UserLoginPartial" />
-
-        </div>
-    </div>
+<div class="modal fade" id="UserLoginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <partial name="_UserLoginPartial" />
 </div>
 
 
-@section Scripts {
-<script src="~/js/UserLogin.js"></script>
-
-
-
-
+@section Scripts
+{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
 
     }
 
 }
-
