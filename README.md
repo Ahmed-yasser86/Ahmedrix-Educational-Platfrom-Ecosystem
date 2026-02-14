@@ -768,6 +768,18 @@ Everything is in containers. If something breaks, I just restart that container.
 > **Note:** An AI Agent is currently under development and will be integrated into the ecosystem soon.
 ---
 
+<img width="1366" height="1404" alt="Screenshot 2026-02-15 at 01-27-34 My Learning Dashboard - Online Courses Platform" src="https://github.com/user-attachments/assets/df84ad4c-b78a-4e59-81be-349af7f08d6f" />
+
+
+<img width="1363" height="881" alt="Screenshot 2026-02-15 at 01-28-40 Categories Management - Admin Dashboard" src="https://github.com/user-attachments/assets/b75d7389-bfa9-4dfa-9f4e-56b4a326507c" />
+
+
+<img width="1351" height="1496" alt="Screenshot 2026-02-15 at 01-30-36 C# - Online Courses Platform" src="https://github.com/user-attachments/assets/9db342aa-e31d-497c-907f-afeb041e4882" />
+
+
+<img width="892" height="509" alt="Screenshot 2026-02-15 at 01-29-42 - Online Courses Platform" src="https://github.com/user-attachments/assets/9662f05b-f93c-44fb-a9c3-2aeb5321718b" />
+
+
 *— Ahmed, Solo Architect & Developer*
 
 *Built from scratch. Maintained by one person. Ready for thousands.*
