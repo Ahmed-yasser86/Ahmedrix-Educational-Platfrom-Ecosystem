@@ -1,0 +1,235 @@
+﻿@using OnlineCoursesPlatform.Comparers
+@model OnlineCoursesPlatform.Areas.Admin.Models.UsersCategoryListModel
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">User Assignments</h6>
+        <span class="badge bg-primary">
+            <i class="fas fa-users me-1"></i>
+            @Model.Users?.Count() Users
+        </span>
+    </div>
+    <div class="card-body">
+        @if (Model.Users != null && Model.Users.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAllUsers">
+                                </div>
+                            </th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            var isSelected = Model.UserSelected != null && Model.UserSelected.Contains(user, new Comparer());
+
+                            <tr class="@(isSelected ? "table-success" : "")">
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input user-checkbox"
+                                               type="checkbox"
+                                               name="selectedUsers"
+                                               value="@user.Id"
+                                               @(isSelected ? "checked" : "")
+                                               data-user-id="@user.Id">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                             style="width: 32px; height: 32px;">
+                                            @user.FirstName?.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <span>@user.FirstName</span>
+                                    </div>
+                                </td>
+                                <td>@user.LastName</td>
+                                <td>
+                                    <small class="text-muted">@user.UserName</small>
+                                </td>
+                                <td>
+                                    @if (isSelected)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Assigned
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-times-circle me-1"></i>Not Assigned
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Selection Stats -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-2">Selection Summary</h6>
+                        <div class="d-flex gap-4">
+                            <div>
+                                <span class="text-muted">Total Users:</span>
+                                <strong class="ms-2">@Model.Users.Count()</strong>
+                            </div>
+                            <div>
+                                <span class="text-muted">Selected:</span>
+                                <strong class="ms-2 text-success" id="selectedCount">
+                                    @(Model.UserSelected?.Count() ?? 0)
+                                </strong>
+                            </div>
+                            <div>
+                                <span class="text-muted">Remaining:</span>
+                                <strong class="ms-2 text-muted" id="remainingCount">
+                                    @(Model.Users.Count() - (Model.UserSelected?.Count() ?? 0))
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-users fa-4x text-gray-300"></i>
+                </div>
+                <h4 class="text-gray-700 mb-3">No Users Available</h4>
+                <p class="text-gray-500 mb-4">There are no users to assign to this category</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Select All functionality
+        document.getElementById('selectAllUsers').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.user-checkbox');
+            const isChecked = this.checked;
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+
+            updateSelectionCount();
+        });
+
+        // Update selection count
+        function updateSelectionCount() {
+            const selectedCheckboxes = document.querySelectorAll('.user-checkbox:checked');
+            const totalUsers = @Model.Users?.Count() ?? 0;
+            const selectedCount = selectedCheckboxes.length;
+            const remainingCount = totalUsers - selectedCount;
+
+            document.getElementById('selectedCount').textContent = selectedCount;
+            document.getElementById('remainingCount').textContent = remainingCount;
+
+            // Update select all checkbox state
+            const selectAllCheckbox = document.getElementById('selectAllUsers');
+            if (selectedCount === totalUsers) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else if (selectedCount > 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+        }
+
+        // Individual checkbox change
+        document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectionCount);
+        });
+
+        // Show selected only filter
+        document.getElementById('showSelectedOnly').addEventListener('change', function() {
+            const rows = document.querySelectorAll('#usersTable tbody tr');
+            const showOnlySelected = this.checked;
+
+            rows.forEach(row => {
+                const checkbox = row.querySelector('.user-checkbox');
+                if (showOnlySelected && !checkbox.checked) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            });
+        });
+
+        // Initialize selection count on page load
+        document.addEventListener('DOMContentLoaded', updateSelectionCount);
+
+        // Row click to select checkbox
+        document.querySelectorAll('#usersTable tbody tr').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger if clicking on checkbox directly
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('.user-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .table-hover tbody tr:hover {
+        cursor: pointer;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .table-success {
+        background-color: rgba(40, 167, 69, 0.1) !important;
+    }
+
+    .avatar-sm {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .form-check-input:indeterminate {
+        background-color: #0dcaf0;
+        border-color: #0dcaf0;
+    }
+
+    .badge {
+        font-size: 0.85em;
+        padding: 0.35em 0.65em;
+    }
+
+    .form-switch .form-check-input {
+        width: 2.5em;
+    }
+
+    #usersTable td {
+        vertical-align: middle;
+    }
+</style>

@@ -3,99 +3,229 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ahmendrix</title>
+    <title>@ViewData["Title"] - Online Courses Platform</title>
 
-    <!-- Modern Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap & FontAwesome -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="~/fontawesome/css/all.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/admin-panel.css" />
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- ADD THIS LINE - This was missing! -->
-    @await RenderSectionAsync("Styles", required: false)
+   
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/style.min.css" />
 </head>
-<body class="futuristic-body">
-    <!-- AI Assistant Badge (Floating) -->
+<body>
+    <!-- AI Assistant -->
     <div class="ai-assistant-badge" id="aiAssistant">
         <i class="fas fa-brain"></i>
-        <span class="ai-pulse"></span>
     </div>
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm futuristic-navbar fixed-top">
-            <div class="container">
-                <!-- Logo with Glow Effect -->
-                <a class="navbar-brand futuristic-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <div class="logo-container">
-                        <img src="/images/TechTreeLogo.jpeg" height="45" alt="TechTree">
-                        <span class="logo-glow"></span>
-                    </div>
-                </a>
-
-                <button class="navbar-toggler futuristic-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link futuristic-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i>
-                                <span>Home</span>
-                                <span class="link-glow"></span>
-                            </a>
-                        </li>
-
-                        <partial name="_AdminMenuPartial" />
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Main Content with Gradient Background -->
-    <div class="container futuristic-container">
-        <main role="main" class="pb-3 main-default futuristic-main">
-            @RenderBody()
-        </main>
-    </div>
-
-    <!-- Modern Footer -->
-    <footer class="futuristic-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <p class="copyright">
-                        <i class="fas fa-code"></i> 2026 TechTree Platform - AI-Powered Learning
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="footer-link">
-                        <i class="fas fa-shield-alt"></i> Privacy Policy
+        <!-- Topbar -->
+        <div class="container-fluid d-none d-lg-block">
+            <div class="row align-items-center py-4 px-xl-5">
+                <div class="col-lg-3">
+                    <a href="" class="text-decoration-none">
+                        <h1 class="m-0"><span class="text-primary">A</span>hmderix</h1>
                     </a>
+                </div>
+                <div class="col-lg-3 text-right">
+                    <div class="d-inline-flex align-items-center">
+                        <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h6 class="font-weight-semi-bold mb-1">Our Office</h6>
+                            <small>123 Street, New York, USA</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-right">
+                    <div class="d-inline-flex align-items-center">
+                        <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h6 class="font-weight-semi-bold mb-1">Email Us</h6>
+                            <small>info@example.com</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-right">
+                    <div class="d-inline-flex align-items-center">
+                        <i class="fa fa-2x fa-phone text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h6 class="font-weight-semi-bold mb-1">Call Us</h6>
+                            <small>+012 345 6789</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="footer-gradient"></div>
-    </footer>
+        <!-- End Topbar -->
+        <!-- Navbar -->
+        <div class="container-fluid">
+            <div class="row border-top px-xl-5">
+                <!-- Services Sidebar -->
+                <partial name="_ServicesSidebarPartial" />
+                <!-- Main Navbar -->
+                <div class="col-lg-9">
+                    <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+                        <a href="" class="text-decoration-none d-block d-lg-none">
+                            <h1 class="m-0"><span class="text-primary">A</span>hmderix</h1>
+                        </a>
+                        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                            <div class="navbar-nav py-0">
+                                <a class="nav-item nav-link active" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-home"></i> Home
+                                </a>
+                                <a class="nav-item nav-link" asp-controller="Instructors" asp-action="Index">
+                                    <i class="fas fa-chalkboard-teacher"></i> Instructors
+                                </a>
+                                <partial name="_AdminMenuPartial" />
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <partial name="_LoginPartial" />
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- End Navbar -->
+    </header>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script> <!-- optional, for other scripts -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
-    <script src="~/js/admin-panel.js"></script>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
+        <div class="row pt-5">
+            <div class="col-lg-7 col-md-12">
+                <div class="row">
+                    <div class="col-md-6 mb-5">
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
+                        <p><i class="fa fa-map-marker-alt me-2"></i>123 Innovation Drive, San Francisco, CA</p>
+                        <p><i class="fa fa-phone-alt me-2"></i>+1 (555) 123-4567</p>
+                        <p><i class="fa fa-envelope me-2"></i>info@ailearnplatform.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <a class="btn btn-outline-light btn-square me-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-light btn-square me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-square me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-5">
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Quick Links</h5>
+                        <div class="d-flex flex-column justify-content-start">
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-12 mb-5">
+                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">AI Learning Insights</h5>
+                <p>Subscribe to our newsletter and receive the latest updates...</p>
+                <div class="w-100">
+                    <form id="newsletterForm">
+                        <div class="input-group">
+                            <input type="email" id="subscriberEmail" class="form-control border-light" style="padding: 25px;" placeholder="Your Email Address" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary px-4">Subscribe</button>
+                            </div>
+                        </div>
+                        <small id="newsletterMessage" style="display:none; margin-top:10px;"></small>
+                    </form>
+                </div>
+            </div>
+
+           
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <div class="row">
+            <div class="col-lg-6 text-center text-md-start mb-3 mb-md-0">
+                <p class="m-0 text-white">
+                    &copy; <a href="#" class="text-white">AI Learn Platform</a>. All Rights Reserved.
+                    <br>Empowering education through artificial intelligence.
+                </p>
+            </div>
+            <div class="col-lg-6 text-center text-md-right">
+                <ul class="nav d-inline-flex">
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Privacy Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Terms of Service</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Support</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <div class="modal fade" id="UserLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <partial name="_UserLoginPartial" model="new LoginModel()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="UserRegistrationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-content">
+            <partial name="_UserRegistrationPartial" model="new RegistrationModel()" />
+        </div>
+    </div>
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script src="~/js/UserLogin.js"></script>
+    <script src="~/js/UserRegistration.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            $('#newsletterForm').submit(function (e) {
+                e.preventDefault();
+                var email = $('#subscriberEmail').val();
+                var messageArea = $('#newsletterMessage');
+
+                $.post('/Newsletter/Subscribe', { email: email }, function (response) {
+                    if (response.success) {
+                        messageArea.css('color', 'green').text(response.message).show();
+                        $('#subscriberEmail').val(''); // مسح الخانة بعد النجاح
+                    } else {
+                        messageArea.css('color', 'red').text(response.message).show();
+                    }
+                });
+            });
+        });
+           function PresentClosableBootstrapAlert(placeHolderId, alertType, alertMessage) {
+            var alertHtml = '<div class="alert alert-' + alertType + ' alert-dismissible fade show" role="alert">' +
+                alertMessage +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>';
+            $("#" + placeHolderId.replace('#', '')).html(alertHtml);
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+

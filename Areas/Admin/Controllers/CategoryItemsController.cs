@@ -68,6 +68,8 @@ namespace OnlineCoursesPlatform.Areas_Admin_Controllers
         public async Task<IActionResult> Create(int categoryId)
         {
 
+           
+
             List<Entities.MediaType> items = await _context.MediaTypes.ToListAsync();
 
             ViewData["Categoryid"]= categoryId;
@@ -95,6 +97,8 @@ namespace OnlineCoursesPlatform.Areas_Admin_Controllers
         public async Task<IActionResult> Create([Bind("Id,Title,Description,DateTimeItemAdded,CategoryId,MediaTypeId")] CategoryItem categoryItem)
         {
 
+              ModelState.Remove("MediaTypes");
+          
 
             if (ModelState.IsValid)
             {

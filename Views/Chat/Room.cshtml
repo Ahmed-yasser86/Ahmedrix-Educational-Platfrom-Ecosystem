@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Chat Room";
+}
+
+<div class="container py-4">
+    <div class="card shadow-lg border-0" style="height: 80vh; border-radius: 20px; overflow: hidden;">
+        <div class="card-header bg-white p-3 border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <a asp-action="Index" class="text-muted me-3"><i class="fas fa-chevron-left"></i></a>
+                    <div>
+                        <h6 class="mb-0 fw-bold">@ViewBag.CourseTitle</h6>
+                        <small id="status" class="text-muted">Connecting to server...</small>
+                    </div>
+                </div>
+                <span class="badge rounded-pill bg-light text-dark border">@ViewBag.UserName</span>
+            </div>
+        </div>
+
+        <div id="chat-box" class="card-body bg-light overflow-auto p-4 d-flex flex-column" style="gap: 15px;">
+        </div>
+
+        <div class="card-footer bg-white border-top p-3">
+            <div class="input-group">
+                <input type="text" id="msg-input" class="form-control border-0 bg-light rounded-pill px-4" placeholder="Type your message here...">
+                <button id="send-btn" class="btn btn-primary rounded-circle ms-2" style="width: 48px; height: 48px;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const socket = new WebSocket('ws://localhost:54321');
+        const currentUserId = '@ViewBag.UserId'.toString();
+        const currentUserName = '@ViewBag.UserName';
+        const roomId = '@ViewBag.RoomId';
+
+        async function loadHistory() {
+            try {
+            const response = await fetch(`/Chat/history/${roomId}`);
+                if (!response.ok) return; 
+
+                const text = await response.text();
+                if (!text || text.trim() === "") return; 
+
+                const messages = JSON.parse(text);
+                messages.forEach(msg => {
+                    const isMe = String(msg.senderId) === String(currentUserId);
+                    renderMessage(msg, isMe);
+                });
+            } catch (err) {
+                console.log("No previous history to load.");
+            }
+        }
+
+        loadHistory();
+
+        socket.onopen = () => {
+            $('#status').html('<span class="text-success">● Live</span>');
+            socket.send(JSON.stringify({ type: "join", roomId: roomId }));
+        };
+
+        function renderMessage(data, isMe) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const alignment = isMe ? 'align-items-end' : 'align-items-start';
+            const bgColor = isMe ? '#667eea' : '#ffffff';
+            const textColor = isMe ? 'white' : '#333';
+            const borderRadius = isMe ? '18px 18px 2px 18px' : '18px 18px 18px 2px';
+
+            const messageHtml = `
+                <div class="d-flex flex-column ${alignment} mb-2">
+                    <div class="p-3 shadow-sm" style="max-width: 75%;
+                         border-radius: ${borderRadius};
+                         background: ${bgColor};
+                         color: ${textColor};">
+                        ${!isMe ? `<small class="d-block fw-bold mb-1" style="font-size: 0.75rem; color: #764ba2;">${data.senderName || 'Student'}</small>` : ''}
+                        <p class="mb-0" style="font-size: 0.95rem;">${data.content}</p>
+                        <small class="d-block mt-1 ${isMe ? 'text-white-50' : 'text-muted'}" style="font-size: 0.65rem; text-align: right;">${time}</small>
+                    </div>
+                </div>`;
+
+            $('#chat-box').append(messageHtml);
+            $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+        }
+
+        function send() {
+            const text = $('#msg-input').val();
+            if (!text || text.trim() === "") return;
+
+            const payload = {
+                type: "chat",
+                senderId: currentUserId,
+                senderName: currentUserName,
+                roomId: roomId,
+                content: text
+            };
+
+            socket.send(JSON.stringify(payload));
+            $('#msg-input').val('');
+        }
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.content) {
+                    const isMe = String(data.senderId) === String(currentUserId);
+                    renderMessage(data, isMe);
+                }
+            } catch (e) {
+                console.log("System message:", event.data);
+            }
+        };
+
+        $('#send-btn').click(send);
+        $('#msg-input').keypress(e => { if(e.which == 13) send(); });
+    </script>
+}

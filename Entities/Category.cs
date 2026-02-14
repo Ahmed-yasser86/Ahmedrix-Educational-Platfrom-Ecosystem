@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineCoursesPlatform.Interfaces;
+using OnlineCoursesPlatform.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineCoursesPlatform.Entities
 {
 
-    public class Category
+    public class Category : IPrimaryProperty
     {
         public int Id { get; set; }
 
@@ -23,5 +25,8 @@ namespace OnlineCoursesPlatform.Entities
 
         [ForeignKey("CategoryId")]
         public virtual ICollection<UserCategory> UserCategory { get; set; }
+
+        public int ?InstructorId { get; set; } 
+        public Instructor Instructor { get; set; } 
     }
 }

@@ -1,0 +1,86 @@
+html {
+  font-family: "Lucida Grande", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 22px;
+}
+* {
+  box-sizing: border-box;
+}
+
+#interface {
+  padding: 22px;
+}
+
+#header {
+  margin-bottom: 11px;
+}
+
+#header > h1 {
+  margin-bottom: 11px;
+}
+
+.preserve-access {
+  position: absolute;
+  left: -20000px;
+}
+
+	button {
+ 	  font-family: inherit;
+ 	  font-size: inherit;
+ 	  font-weight: inherit;
+ 	  line-height: inherit;
+ 	  cursor: pointer;
+ 	  /* Box Styles */
+ 	  display: block;
+ 	  border: 0;
+ 	  border-radius: 3px;
+ 	  padding: 11px;
+ 	}
+
+   .join {
+ 	  background-color: green;
+ 	  color: white;
+ 	}
+ 	.leave {
+ 	  background-color: #CA0;
+ 	  color: black;
+ 	}
+
+   .join {
+ 	  background-color: green;
+ 	  color: white;
+ 	}
+ 	.leave {
+ 	  background-color: #CA0;
+ 	  color: black;
+ 	}
+
+ @media screen and (min-width: 500px) {
+ 	  #header {
+    display: flex;
+ 	    flex-direction: row-reverse;
+ 	    align-items: baseline;
+ 	    justify-content: flex-end;
+ 	  }
+ 	  #header > * {
+ 	    flex: 0 0 auto;
+ 	  }
+ 	  #header > h1 {
+ 	    margin-bottom: 0;
+ 	  }
+ 	}
+
+   	video {
+ 	  background-color: #DDD;
+ 	  display: block;
+ 	  max-width: 100%;
+ 	}
+
+   	#self {
+ 	  width: 50%;
+ 	  max-width: 320px;
+ 	  margin-bottom: 11px;
+ 	}
+
+

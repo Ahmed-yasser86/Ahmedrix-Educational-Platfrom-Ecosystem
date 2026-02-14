@@ -1,31 +1,37 @@
-html {
-  font-size: 14px;
+﻿/* علشان الكاروسيل ياخد 100% طول وعرض */
+.carousel-item {
+    height: 100vh; /* 100% من طول الشاشة */
+    min-height: 500px; /* حد أدنى علشان الموبايل */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    /* الصورة 100% */
+    .carousel-item img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover; /* علشان متتشدش الصورة */
+    }
+
+/* الكونتاينر الكبير ياخد كامل العرض */
+.container-fluid.p-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+/* علشان الكاروسيل ياخد كامل العرض */
+.container-fluid.p-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* الصورة تاخد 100% */
+.carousel-item {
+    height: 80vh; /* أو 100vh لو عايز طول الشاشة كله */
+    min-height: 500px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
+    .carousel-item img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+    }

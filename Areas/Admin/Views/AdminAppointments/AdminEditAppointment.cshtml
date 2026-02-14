@@ -1,0 +1,52 @@
+﻿@model OnlineCoursesPlatform.Entities.Appointment
+
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<div class="container py-4">
+    <h2>Edit Appointment #@Model.Id</h2>
+
+    <form asp-action="AdminEdit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Student</label>
+            <input type="text" class="form-control" value="@Model.Student?.Email" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label>Instructor</label>
+            <input type="text" class="form-control" value="@Model.Instructor?.Name" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label>Date & Time</label>
+            <input type="datetime-local" asp-for="AppointmentDate" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Status</label>
+            <select asp-for="Status" class="form-control">
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Meeting Room URL</label>
+            <input type="text" asp-for="RoomUrl" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label>Notes</label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/Admin/AdminAppointments/AdminIndex" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

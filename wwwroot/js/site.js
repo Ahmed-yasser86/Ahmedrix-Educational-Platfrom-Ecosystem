@@ -1,4 +1,22 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Simple enhancements
+document.addEventListener('DOMContentLoaded', function () {
+    // AI Assistant
+    const aiAssistant = document.getElementById('aiAssistant');
+    if (aiAssistant) {
+        aiAssistant.addEventListener('click', function () {
+            // Your AI assistant functionality
+        });
+    }
 
-// Write your JavaScript code.
+    // Card hover effects
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-4px)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});

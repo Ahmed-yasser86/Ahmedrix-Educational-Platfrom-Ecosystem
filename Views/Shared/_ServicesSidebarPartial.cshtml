@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineCoursesPlatform.Data;
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="col-lg-3 d-none d-lg-block">
+    <a class="d-flex align-items-center justify-content-between bg-secondary w-100 text-decoration-none" data-bs-toggle="collapse" href="#navbar-vertical" style="height: 67px; padding: 0 30px;">
+        <h5 class="text-primary m-0"><i class="fa fa-cogs mr-2"></i>Our Services</h5>
+        <i class="fa fa-angle-down text-primary"></i>
+    </a>
+    <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light" id="navbar-vertical" style="width: calc(100% - 30px); z-index: 9;">
+        <div class="navbar-nav w-100">
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="nav-link text-dark" asp-area="Identity" data-bs-toggle="modal" data-bs-target="#UserRegistrationModal" style="cursor:pointer;">
+                    <i class="fa fa-video mr-2 text-info"></i>Book sessions With Our Instructors
+                </a>
+            }
+            else
+            {
+                <a class="nav-link text-dark" asp-controller="Appointment" asp-action="Index">
+                    <i class="fa fa-video mr-2 text-info"></i>Book sessions With Our Instructors
+                </a>
+            }
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="nav-link text-dark" data-bs-toggle="modal" data-bs-target="#UserRegistrationModal" style="cursor:pointer;">
+                    <i class="fa fa-comments mr-2 text-primary"></i>Study Groups Chat
+                </a>
+            }
+            else
+            {
+                <a class="nav-link text-dark" asp-controller="Chat" asp-action="Index">
+                    <i class="fa fa-comments mr-2 text-primary"></i>My Study Groups
+                </a>
+            }
+
+            <a asp-controller="AIAgent" asp-action="Chat" class="nav-item nav-link">
+                <i class="fa fa-robot mr-2"></i>Talk to AI Agent
+            </a>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">
+                    <i class="fas fa-laptop-code mr-2"></i>Courses
+                </a>
+            }
+            else
+            {
+                <a asp-controller="CategoriesToUser" asp-action="Index" class="nav-item nav-link">
+                    <i class="fa fa-book-open mr-2"></i>Browse Courses
+                </a>
+            }
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="nav-item nav-link text-dark" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#UserRegistrationModal">
+                    <i class="fa fa-broadcast-tower mr-2 text-danger"></i>
+                    <span>Live Classes (Join Now)</span>
+                </a>
+            }
+            else
+            {
+                <a asp-controller="LiveStudent" asp-action="Index" class="nav-item nav-link">
+                    <i class="fa fa-broadcast-tower mr-2 text-danger"></i>
+                    <span>Watch Live Streams</span>
+                </a>
+            }
+        </div>
+    </nav>
+</div>

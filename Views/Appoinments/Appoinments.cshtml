@@ -1,0 +1,124 @@
+﻿@model OnlineCoursesPlatform.Models.AppointmentToUserModel
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Appointments</h2>
+
+    <div class="row">
+        <!-- Book New Appointment -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Book New Appointment</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateAppointment" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Instructor -->
+                        <div class="mb-3">
+                            <label>Instructor</label>
+                            <select asp-for="SelectedInstructorId" class="form-control" required>
+                                <option value="">Select Instructor</option>
+                                @foreach (var instructor in Model.AvailableInstructors)
+                                {
+                                    <option value="@instructor.Id">@instructor.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="mb-3">
+                            <label>Date</label>
+                            <input type="datetime-local" asp-for="SelectedDate"
+                                   class="form-control"
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                   required>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-3">
+                            <label>Notes (Optional)</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Appointments -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">My Appointments</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.UserAppointments.Any())
+                    {
+                        <p class="text-muted">No appointments yet.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var appointment in Model.UserAppointments)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">@appointment.Instructor?.Name</h6>
+                                            <small class="text-muted">
+                                                @appointment.AppointmentDate.ToString("dd MMM yyyy hh:mm tt")
+                                            </small>
+                                            @if (!string.IsNullOrEmpty(appointment.Notes))
+                                            {
+                                                <div class="mt-2 small">@appointment.Notes</div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(appointment.RoomUrl))
+                                            {
+                                                <a href="@appointment.RoomUrl" target="_blank" class="btn btn-sm btn-info mt-2">
+                                                    <i class="fa fa-video"></i> Join Meeting
+                                                </a>
+                                            }
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge
+                                                    @(appointment.Status == "Pending" ? "bg-warning" :
+                                                                                                appointment.Status == "Confirmed" ? "bg-success" :
+                                                                                                appointment.Status == "Completed" ? "bg-primary" :
+                                                                                                appointment.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
+                                        @appointment.Status
+                                    </span>
+                                    <div class="mt-2">
+                                        @if (appointment.Status == "Pending" || appointment.Status == "Confirmed")
+                                                {
+                                                    <a href="/Appointment/Cancel/@appointment.Id"
+                                                       class="btn btn-sm btn-outline-danger"
+                                                       onclick="return confirm('Cancel this appointment?')">
+                                                        Cancel
+                                                    </a>
+                                                }
+                                                @if (appointment.Status == "Confirmed" && appointment.AppointmentDate <= DateTime.Now)
+                                                {
+                                                    <a href="/Appointment/Complete/@appointment.Id"
+                                                       class="btn btn-sm btn-outline-success"
+                                                       onclick="return confirm('Mark as completed?')">
+                                                        Complete
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

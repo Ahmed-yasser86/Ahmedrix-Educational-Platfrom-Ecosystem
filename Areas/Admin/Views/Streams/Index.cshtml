@@ -1,0 +1,105 @@
+﻿@model OnlineCoursesPlatform.Areas.Admin.Models.AdminStreamDashboardViewModel
+
+@{
+    ViewData["Title"] = "Live Stream Dashboard";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary text-white">
+        <h5 class="m-0 font-weight-bold">📺 Stream Sessions Management</h5>
+        <a asp-action="Create" class="btn btn-light btn-sm shadow-sm">
+            <i class="fas fa-plus fa-sm text-primary"></i> Start New Stream
+        </a>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-4" id="streamTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#active" role="tab">
+                    🔴 Live Now 
+                    <span class="badge bg-danger ms-1">@Model.ActiveSessions.Count</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="past-tab" data-bs-toggle="tab" href="#past" role="tab">
+                    📚 Archive (Past Sessions)
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="active" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Instructor</th>
+                                <th>Session Title</th>
+                                <th>Course</th>
+                                <th>Start Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var session in Model.ActiveSessions)
+                            {
+                                <tr>
+                                    <td><strong>@session.Instructor?.Name</strong></td>
+                                    <td>@session.Title</td>
+                                    <td><span class="badge bg-info">@session.Category?.Title</span></td>
+                                    <td>@session.StartTime.ToString("HH:mm")</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <form asp-action="EndStream" method="post" onsubmit="return confirm('Are you sure you want to end this session?')">
+                                                <input type="hidden" name="streamKey" value="@session.StreamKey" />
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-stop me-1"></i> End
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.ActiveSessions.Any())
+                            {
+                                <tr><td colspan="5" class="text-center py-4">No active live streams at the moment</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="past" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Instructor</th>
+                                <th>Session</th>
+                                <th>Date</th>
+                                <th>Stream Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var session in Model.PastSessions)
+                            {
+                                <tr>
+                                    <td>@session.Instructor?.Name</td>
+                                    <td>@session.Title</td>
+                                    <td>@session.StartTime.ToShortDateString()</td>
+                                    <td>
+                                        @{
+                                            var duration = session.EndTime.HasValue 
+                                                ? (session.EndTime.Value - session.StartTime).TotalMinutes 
+                                                : 0;
+                                            @Math.Round(duration) @:minutes
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+﻿@using OnlineCoursesPlatform.Entities
+@model IEnumerable<Category>
+
+<partial name="_CarouselStart" />
+<!-- Hero -->
+<div class="hero section">
+    <div class="hero-content">
+        <h2 class="hero-heading-text"> </h2>
+    </div>
+</div>
+
+<hr class="section-divider" />
+<!-- About Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-5">
+                <img class="img-fluid rounded mb-4 mb-lg-0" src="~/Images/about.jpg" alt="AI-Powered Learning Experience">
+            </div>
+            <div class="col-lg-7">
+                <div class="text-start mb-4">
+                    <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">About Us</h5>
+                    <h1>Where Every Interaction is Powered by Intelligence</h1>
+                </div>
+                <p>We are the future of learning—a platform where artificial intelligence is seamlessly woven into every experience. Unlike traditional platforms that simply add AI features, we have built an ecosystem where every action, from content discovery to skill mastery, is enhanced and guided by intelligent agents. Our network of specialized AI chatbots and adaptive assistants personalizes the journey for each learner, transforming passive consumption into dynamic, interactive education.</p>
+                <p>We believe learning should be intuitive, responsive, and deeply engaging. That’s why we’ve moved beyond the conventional, creating a environment where AI doesn’t just support learning—it drives it. Welcome to a platform that doesn’t just teach you, but understands and evolves with you.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+<partial name="_CategoriesPanal" />
+<!-- Courses -->
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">Courses</h5>
+            <h1>AI-Enhanced Learning Experiences</h1>
+            <p class="lead text-muted">Each course is powered by intelligent AI agents that personalize and optimize your learning journey</p>
+        </div>
+    </div>
+
+    @{
+        const int itemsPerRow = 4;
+        var count = Model.Count() / itemsPerRow;
+    }
+
+    @for (int i = 0; i <= count; i++)
+    {
+        var catList = Model.Skip(i * itemsPerRow).Take(itemsPerRow).ToList();
+        <partial name="_DisplayCardRowPartial" model="catList" />
+    }
+</div>
+
+<hr class="section-divider" />
+

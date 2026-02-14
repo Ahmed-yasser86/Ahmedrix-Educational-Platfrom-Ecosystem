@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بث المدرس - المرحلة الأولى</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #1a1a1a; color: #fff; padding-top: 50px; }
+        video { width: 90%; max-width: 640px; border: 3px solid #333; border-radius: 15px; background: #000; }
+        .controls { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        button { padding: 12px 25px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px; border: none; }
+        #open-cam { background: #007bff; color: white; }
+        #start-btn { background: #28a745; color: white; display: none; }
+        #stop-btn { background: #dc3545; color: white; display: none; }
+        .status { margin: 20px; font-size: 18px; color: #ffc107; }
+    </style>
+</head>
+<body>
+
+    <h2>🎥 نظام بث المدرس (المرحلة الأولى)</h2>
+    <div class="status" id="status">الخطوة 1: افتح الكاميرا</div>
+    
+    <video id="preview" autoplay muted playsinline></video>
+    
+    <div class="controls">
+        <button id="open-cam">1. فتح الكاميرا</button>
+        <button id="start-btn">2. بدأ البث المباشر 🔴</button>
+        <button id="stop-btn">إيقاف البث</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        let stream;
+        let mediaRecorder;
+        const socket = io('http://localhost:3001'); 
+        const preview = document.getElementById('preview');
+        const status = document.getElementById('status');
+
+        document.getElementById('open-cam').onclick = async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 1280, height: 720 }, 
+                    audio: true 
+                });
+                preview.srcObject = stream;
+                status.innerText = "الكاميرا جاهزة. اضغط بدأ البث.";
+                document.getElementById('open-cam').style.display = 'none';
+                document.getElementById('start-btn').style.display = 'inline';
+            } catch (err) {
+                status.innerText = "خطأ: فشل الوصول للكاميرا.";
+            }
+        };
+
+        document.getElementById('start-btn').onclick = () => {
+            socket.emit('start-stream');
+
+            // اختيار Codec يدعم الفيديو والصوت معاً (VP8 + Opus)
+            let options = { mimeType: 'video/webm;codecs=vp8,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm' };
+            }
+
+            mediaRecorder = new MediaRecorder(stream, options);
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    socket.emit('video-chunk', event.data);
+                }
+            };
+
+            mediaRecorder.start(100); 
+            status.innerText = "🔴 البث مباشر الآن";
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('stop-btn').style.display = 'inline';
+        };
+
+        document.getElementById('stop-btn').onclick = () => { window.location.reload(); };
+        socket.on('connect_error', () => { status.innerText = "خطأ: تأكد من تشغيل bridge.js"; });
+    </script>
+</body>
+</html>

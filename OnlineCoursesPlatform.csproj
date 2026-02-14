@@ -14,11 +14,19 @@
 	<ItemGroup>
 	  <Content Remove="Areas\Admin\Views\Content\Index.cshtml" />
 	  <Content Remove="Views\Shared\_RegisterPartial.cshtml" />
+	  <Content Remove="wwwroot\css\admin-panel.css" />
+	  <Content Remove="wwwroot\css\site.css" />
+	  <Content Remove="wwwroot\css\site2.css" />
+	  <Content Remove="wwwroot\css\site3.css" />
+	  <Content Remove="wwwroot\Images\C#.jpg" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MediatR" Version="14.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
 
 		<!-- EF Core design-time tools -->
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
@@ -42,9 +50,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Areas\Admin\Controllers\" />
-		<Folder Include="Areas\Admin\Data\" />
-		<Folder Include="Areas\Admin\Models\" />
 		<Folder Include="Areas\Identity\Data\" />
 	</ItemGroup>
 

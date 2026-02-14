@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Test</title>
+</head>
+<body>
+    <h1>Secret Chat Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages" style="border:1px solid #ccc; height:200px; overflow-y:scroll; margin:10px 0; padding:10px;"></div>
+    <input type="text" id="msgInput" placeholder="Type a message...">
+    <button onclick="send()">Send</button>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:54321');
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+
+        ws.onopen = () => {
+            statusDiv.innerHTML = "✅ Connected to Load Balancer";
+            ws.send("joinRoom:general"); 
+        };
+
+        ws.onmessage = (e) => {
+            const msg = document.createElement('p');
+            msg.textContent = e.data;
+            messagesDiv.appendChild(msg);
+        };
+
+        ws.onerror = (e) => {
+            statusDiv.innerHTML = "❌ Connection Failed. Check Docker or HAProxy.";
+        };
+
+        function send() {
+            const input = document.getElementById('msgInput');
+            ws.send(input.value);
+            input.value = '';
+        }
+    </script>
+</body>
+</html>

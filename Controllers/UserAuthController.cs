@@ -14,7 +14,7 @@ using OnlineCoursesPlatform.Models;
 
 namespace OnlineCoursesPlatform.Controllers
 {
-    public class UserAuthController : Controller
+    public class UserAuthController :Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -77,78 +77,83 @@ namespace OnlineCoursesPlatform.Controllers
 
         }
 
-        //[AllowAnonymous]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> RegisterUser(RegistrationModel registrationModel)
-        //    {
-        //        registrationModel.RegistrationInValid = "true";
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterUser(RegistrationModel registrationModel)
+        {
+            registrationModel.RegistrationInValid = "true";
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            ApplicationUser user = new ApplicationUser
-        //            {
-        //                UserName = registrationModel.Email,
-        //                Email = registrationModel.Email,
-        //                PhoneNumber = registrationModel.PhoneNumber,
-        //                FirstName = registrationModel.FirstName,
-        //                LastName = registrationModel.LastName,
-        //                Address1 = registrationModel.Address1,
-        //                Address2 = registrationModel.Address2,
-        //                PostCode = registrationModel.PostCode
+            ModelState.Remove("RegistrationInValid");
+            ModelState.Remove("RegistrationFailedMessage");
+            ModelState.Remove("CategoryId");
 
-        //            };
+        
 
-        //            var result = await _userManager.CreateAsync(user, registrationModel.Password);
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = registrationModel.Email,
+                    Email = registrationModel.Email,
+                    PhoneNumber = registrationModel.PhoneNumber,
+                    FirstName = registrationModel.FirstName,
+                    LastName = registrationModel.LastName,
+                    Address1 = registrationModel.Address1,
+                    Address2 = registrationModel.Address2,
+                    PostCode = registrationModel.PostCode
 
-        //            if (result.Succeeded)
-        //            {
-        //                registrationModel.RegistrationInValid = "";
+                };
 
-        //                await _signInManager.SignInAsync(user, isPersistent: false);
+                var result = await _userManager.CreateAsync(user, registrationModel.Password);
 
-        //                if (registrationModel.CategoryId != 0)
-        //                {
-        //                    await AddCategoryToUser(user.Id, registrationModel.CategoryId);
+                if (result.Succeeded)
+                {
+                    registrationModel.RegistrationInValid = "";
 
-        //                }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
-        //                return PartialView("_UserRegistrationPartial", registrationModel);
-        //            }
+                    if (registrationModel.CategoryId != 0)
+                    {
+                        await AddCategoryToUser(user.Id, registrationModel.CategoryId);
 
-        //            AddErrorsToModelState(result);
+                    }
 
-        //        }
-        //        return PartialView("_UserRegistrationPartial", registrationModel);
+                    return PartialView("_UserRegistrationPartial", registrationModel);
+                }
 
-        //    }
+                AddErrorsToModelState(result);
 
-        //    [AllowAnonymous]
-        //    public async Task<bool> UserNameExists(string userName)
-        //    {
-        //        bool userNameExists = await _context.Users.AnyAsync(u => u.UserName.ToUpper() == userName.ToUpper());
+            }
+            return PartialView("_UserRegistrationPartial", registrationModel);
 
-        //        if (userNameExists)
-        //            return true;
+        }
 
-        //        return false;
+        [AllowAnonymous]
+        public async Task<bool> UserNameExists(string userName)
+        {
+            bool userNameExists = await _context.Users.AnyAsync(u => u.UserName.ToUpper() == userName.ToUpper());
 
-        //    }
+            if (userNameExists)
+                return true;
 
-        //    private void AddErrorsToModelState(IdentityResult result)
-        //    {
-        //        foreach (var error in result.Errors)
-        //            ModelState.AddModelError(string.Empty, error.Description);
-        //    }
+            return false;
 
-        //    private async Task AddCategoryToUser(string userId, int categoryId)
-        //    {
-        //        UserCategory userCategory = new UserCategory();
-        //        userCategory.CategoryId = categoryId;
-        //        userCategory.UserId = userId;
-        //        _context.UserCategory.Add(userCategory);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
+        }
+
+        private void AddErrorsToModelState(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        private async Task AddCategoryToUser(string userId, int categoryId)
+        {
+            UserCategory userCategory = new UserCategory();
+            userCategory.CategoryId = categoryId;
+            userCategory.UserId = userId;
+            _context.UserCategories.Add(userCategory);
+            await _context.SaveChangesAsync();
+        }
     }
 }

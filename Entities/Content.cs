@@ -9,7 +9,7 @@ public class Content
     public string HTMLContent { get; set; }
     public string VideoLink { get; set; }
 
-    [NotMapped]
+    [Column("CategoryItemId")]  // Maps C# property to database column
     public int CatItemId { get; set; }
 
 
@@ -18,6 +18,7 @@ public class Content
     public int CategoryId { get; set; }
 
     // Navigation property
+    [ForeignKey("CatItemId")]
     public virtual CategoryItem CategoryItem { get; set; }
 
 

@@ -1,0 +1,177 @@
+﻿@using OnlineCoursesPlatform.Comparers
+@model OnlineCoursesPlatform.Models.CategoriesToUserModel
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px;">Personalize</h5>
+            <h1>Customize Your AI Learning Journey</h1>
+            <p class="lead text-muted">Select the categories that interest you. Our AI will personalize your learning experience based on your choices.</p>
+        </div>
+
+        <form asp-action="Index" class="bg-light p-5 rounded shadow-sm">
+            @if (Model != null && Model.categories != null)
+            {
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="mb-4"><i class="fas fa-robot text-primary me-2"></i> Select Your Learning Paths</h4>
+                        <p class="text-muted">Choose the categories that match your interests. Each selection will be enhanced with AI-powered learning assistants.</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 100px;">Select</th>
+                                <th scope="col">Category</th>
+                                <th scope="col" style="width: 200px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.categories)
+                            {
+                                <tr class="category-row" onclick="toggleCheckbox(@category.Id)">
+                                    <td class="text-center">
+                                        <div class="form-check d-inline-block">
+                                            @if (Model.CategoriesSelected != null && Model.CategoriesSelected.Contains(category, new CompareCategories()))
+                                            {
+                                                <input type="checkbox" class="form-check-input category-checkbox"
+                                                       id="category-@category.Id"
+                                                       name="CategoriesSelected"
+                                                       checked
+                                                       value="@category.Id"
+                                                       style="width: 1.5rem; height: 1.5rem;"
+                                                       onclick="event.stopPropagation()">
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" class="form-check-input category-checkbox"
+                                                       id="category-@category.Id"
+                                                       name="CategoriesSelected"
+                                                       value="@category.Id"
+                                                       style="width: 1.5rem; height: 1.5rem;"
+                                                       onclick="event.stopPropagation()">
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <label class="h5 mb-0" for="category-@category.Id" style="cursor: pointer;">
+                                            @category.Title
+                                        </label>
+                                        @if (!string.IsNullOrEmpty(category.Description))
+                                        {
+                                            <p class="text-muted small mb-0 mt-1">@category.Description</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Model.CategoriesSelected != null && Model.CategoriesSelected.Contains(category, new CompareCategories()))
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success">
+                                                <i class="fas fa-check-circle me-1"></i> Selected
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                <i class="fas fa-clock me-1"></i> Available
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4">
+                            <div>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    Your selections will power your personalized AI learning assistants
+                                </p>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-save me-2"></i> Save Preferences
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-robot fa-4x text-primary mb-4"></i>
+                    <h3 class="mb-3">No Categories Available</h3>
+                    <p class="text-muted">Please check back later as we add more AI-powered learning categories.</p>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleCheckbox(categoryId) {
+            const checkbox = document.getElementById('category-' + categoryId);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                // Update the row styling
+                updateRowStyle(checkbox);
+                // Trigger change event if needed
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Update row style based on checkbox state
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            checkboxes.forEach(checkbox => {
+                updateRowStyle(checkbox);
+                checkbox.addEventListener('change', function() {
+                    updateRowStyle(this);
+                });
+            });
+        });
+
+        function updateRowStyle(checkbox) {
+            const row = checkbox.closest('.category-row');
+            if (checkbox.checked) {
+                row.classList.add('table-primary');
+                row.classList.remove('table-default');
+            } else {
+                row.classList.remove('table-primary');
+                row.classList.add('table-default');
+            }
+        }
+    </script>
+}
+
+<style>
+    .category-row {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .category-row:hover {
+            background-color: rgba(13, 110, 253, 0.05) !important;
+            transform: translateX(5px);
+        }
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+</style>

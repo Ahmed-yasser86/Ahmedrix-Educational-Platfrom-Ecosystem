@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NMS v4 Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #eee; }
+        #status { color: green; font-weight: bold; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Node-Media-Server v4 Dashboard</h1>
+    <div id="status">Loading...</div>
+    <div id="streams"></div>
+
+    <script>
+        const API_URL = 'http://localhost:8002';
+        const USER = 'admin';
+        const PASSWORD_MD5 = '0192023a7bbd73250516f069df18b500';
+
+        async function login() {
+            const res = await fetch(API_URL + '/api/v1/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: USER, password: PASSWORD_MD5 })
+            });
+            const data = await res.json();
+            if (data.success) return data.data.token;
+            throw new Error('Login failed: ' + data.message);
+        }
+
+        async function getStreams(token) {
+            const res = await fetch(API_URL + '/api/v1/streams', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            if (data.success) return data.data.streams;
+            throw new Error('Failed to fetch streams: ' + data.message);
+        }
+
+        async function load() {
+            try {
+                document.getElementById('status').innerHTML = 'Logging in...';
+                const token = await login();
+                document.getElementById('status').innerHTML = 'Fetching streams...';
+                const streams = await getStreams(token);
+                
+                document.getElementById('status').innerHTML = 'Loaded ' + streams.length + ' stream(s)';
+                
+                if (streams.length === 0) {
+                    document.getElementById('streams').innerHTML = '<p>No active streams.</p>';
+                    return;
+                }
+
+                let html = '<table><tr><th>App</th><th>Stream</th><th>Publishers</th><th>Viewers</th><th>Video</th><th>Audio</th></tr>';
+                streams.forEach(s => {
+                    html += `<tr>
+                        <td>${s.app}</td>
+                        <td>${s.name}</td>
+                        <td>${s.publish?.clients || 0}</td>
+                        <td>${s.play?.clients || 0}</td>
+                        <td>${s.video?.codec || 'none'} ${s.video?.width || ''}x${s.video?.height || ''} ${s.video?.fps || ''}fps</td>
+                        <td>${s.audio?.codec || 'none'} ${s.audio?.samplerate || ''}Hz ${s.audio?.channels || ''}ch</td>
+                    </tr>`;
+                });
+                html += '</table>';
+                document.getElementById('streams').innerHTML = html;
+            } catch (e) {
+                document.getElementById('status').innerHTML = '<span class="error">Error: ' + e.message + '</span>';
+            }
+        }
+
+        load();
+        setInterval(load, 5000);
+    </script>
+</body>
+</html>

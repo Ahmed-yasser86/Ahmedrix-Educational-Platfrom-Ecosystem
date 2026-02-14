@@ -1,0 +1,53 @@
+﻿@model IEnumerable<OnlineCoursesPlatform.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Admin - Appointments";
+}
+
+<div class="container py-4">
+    <h2>Appointments Management</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No appointments found.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Instructor</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model)
+                {
+                    <tr>
+                        <td>@appointment.Id</td>
+                        <td>@appointment.Student?.Email</td>
+                        <td>@appointment.Instructor?.Name</td>
+                        <td>@appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge
+                                        @(appointment.Status == "Pending" ? "bg-warning" :
+                                                                    appointment.Status == "Confirmed" ? "bg-success" :
+                                                                    appointment.Status == "Completed" ? "bg-primary" :
+                                                                    appointment.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
+                        @appointment.Status
+                    </span>
+                </td>
+                <td>
+                    <a href="/Admin/AdminAppointments/AdminEdit/@appointment.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a href="/Admin/AdminAppointments/AdminDelete/@appointment.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+                        }
+            </tbody>
+        </table>
+    }
+</div>

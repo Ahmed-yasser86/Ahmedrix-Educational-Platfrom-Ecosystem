@@ -1,163 +1,258 @@
+@{
+    Layout = "/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
 @model IEnumerable<OnlineCoursesPlatform.Entities.Category>
 @{
     ViewData["Title"] = "Categories Management";
+    ViewData["CategoryCount"] = Model.Count();
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/admin-panel.css?v=@DateTime.Now.Ticks" />
-}
-
-@section Scripts {
-    <script src="~/js/admin-panel.js?v=@DateTime.Now.Ticks"></script>
-}
-
-<div class="admin-categories-container">
-    <!-- Header Section -->
-    <div class="categories-header">
-        <div class="header-content">
-            <div class="header-text">
-                <h1 class="page-title">
-                    <span class="title-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                    </span>
-                    Categories Management
-                </h1>
-                <p class="page-subtitle">Organize and manage your course categories with AI-powered insights</p>
-            </div>
-            <a asp-action="Create" class="btn-create">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Create Category
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-layer-group text-primary me-2"></i>
+                Categories Management
+            </h1>
+            <p class="text-muted mb-0">Organize and manage your course categories</p>
+        </div>
+        <div>
+            <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create Category
             </a>
         </div>
+    </div>
 
-        <!-- AI Insights Panel -->
-        <div class="ai-insights-panel">
-            <div class="insight-item">
-                <span class="insight-label">Total Categories</span>
-                <span class="insight-value">@Model.Count()</span>
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Categories
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-layer-group fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="insight-item">
-                <span class="insight-label">AI Status</span>
-                <span class="insight-value active">
-                    <span class="status-dot"></span>
-                    Active
-                </span>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="insight-item">
-                <span class="insight-label">Last Updated</span>
-                <span class="insight-value">@DateTime.Now.ToString("MMM dd, yyyy")</span>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                AI Optimized
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-robot fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Last Updated
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@DateTime.Now.ToString("MMM dd")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
- 
-    <!-- Categories Grid -->
-    @if (Model.Any())
-    {
-        <div class="categories-grid" id="categoriesGrid">
-            @foreach (var item in Model)
+    <!-- Categories Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">All Categories</h6>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                    <input type="text" class="form-control" placeholder="Search categories..." id="searchInput">
+                    <button class="btn btn-outline-primary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
             {
-                <div class="category-card" data-category-id="@item.Id">
-                    <!-- Card Header with Thumbnail -->
-                    <div class="card-thumbnail">
-                        @if (!string.IsNullOrEmpty(item.ThumbnailImagePath))
-                        {
-                            <img src="@item.ThumbnailImagePath" alt="@item.Title" class="thumbnail-image">
-                        }
-                        else
-                        {
-                            <div class="thumbnail-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                </svg>
-                            </div>
-                        }
-                        <div class="card-overlay">
-                            <div class="ai-score">
-                                <span class="score-label">AI Score</span>
-                                <span class="score-value">@(new Random().Next(75, 99))</span>
-                            </div>
-                        </div>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="categoriesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Thumbnail</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Items</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var (item, index) in Model.Select((item, index) => (item, index + 1)))
+                            {
+                                <tr>
+                                    <td>@index</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ThumbnailImagePath))
+                                        {
+                                            <img src="@item.ThumbnailImagePath" alt="@item.Title"
+                                                 class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                                 style="width: 50px; height: 50px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@item.Title</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            @(item.Description?.Length > 80 ? item.Description.Substring(0, 80) + "..." : item.Description ?? "No description")
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            @(item.CategoryItems?.Count ?? 0) items
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Active
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Edit" asp-route-id="@item.Id"
+                                               class="btn btn-outline-primary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn btn-outline-info" title="Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="CategoryItems" asp-action="Index" asp-route-categoryId="@item.Id"
+                                               class="btn btn-outline-success" title="Manage Items">
+                                                <i class="fas fa-list"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-layer-group fa-4x text-gray-300"></i>
                     </div>
-
-                    <!-- Card Content -->
-                    <div class="card-content">
-                        <h3 class="category-title">@item.Title</h3>
-                        <p class="category-description">
-                            @(item.Description?.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description ?? "No description available")
-                        </p>
-
-                        <!-- AI Insights Tags -->
-                        <div class="category-tags">
-                            <span class="tag tag-primary">Active</span>
-                            <span class="tag tag-ai">AI Optimized</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="card-actions">
-
-                           <a asp-controller="Category" asp-area="Admin" asp-action="Edit" asp-route-id="@item.Id" class="action-btn btn-edit" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                            </a>
-                            <a asp-controller="Category" asp-area="Admin" asp-route-id="@item.Id" class="action-btn btn-view" title="Details">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </a>
-                            <a asp-controller="CategoryItems" asp-area="Admin" asp-action="Index" asp-route-CategoryId="@item.Id" class="action-btn btn-items" title="Manage Items">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="8" y1="6" x2="21" y2="6"></line>
-                                    <line x1="8" y1="12" x2="21" y2="12"></line>
-                                    <line x1="8" y1="18" x2="21" y2="18"></line>
-                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                                </svg>
-                            </a>
-                            <a asp-controller="Category" asp-area="Admin" asp-action="Delete" asp-route-id="@item.Id" class="action-btn btn-delete" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
+                    <h4 class="text-gray-700 mb-3">No Categories Found</h4>
+                    <p class="text-gray-500 mb-4">Start building your course library by creating your first category</p>
+                    <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create First Category
+                    </a>
                 </div>
             }
         </div>
-    }
-    else
-    {
-        <!-- Empty State -->
-        <div class="empty-state">
-            <div class="empty-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                </svg>
-            </div>
-            <h3 class="empty-title">No Categories Found</h3>
-            <p class="empty-description">Start building your course library by creating your first category</p>
-            <a asp-action="Create" class="btn-create-empty">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Create First Category
-            </a>
-        </div>
-    }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#categoriesTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .btn-group .btn {
+        border-radius: 0.375rem !important;
+    }
+
+    .img-thumbnail {
+        border-radius: 6px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        border-radius: 10px 10px 0 0 !important;
+    }
+</style>

@@ -1,0 +1,36 @@
+{
+  "logType": 3,
+  "rtmp": {
+    "port": 1938,
+    "chunk_size": 60000,
+    "gop_cache": true,
+    "ping": 30,
+    "ping_timeout": 60
+  },
+  "http": {
+    "port": 8003,
+    "allow_origin": "*",
+    "mediaroot": "./media",
+    "api": true
+  },
+  "trans": {
+    "ffmpeg": "ffmpeg",
+    "tasks": []
+  },
+  "auth": {
+    "play": false,
+    "publish": false,
+    "secret": "nodemedia2017privatekey",
+    "jwt": {
+      "expiresIn": "24h",
+      "refreshExpiresIn": "7d",
+      "algorithm": "HS256",
+      "users": [
+        {
+          "username": "admin",
+          "password": "admin123"
+        }
+      ]
+    }
+  }
+}

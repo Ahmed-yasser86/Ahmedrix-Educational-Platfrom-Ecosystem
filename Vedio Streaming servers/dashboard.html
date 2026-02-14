@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NMS Dashboard - WORKING</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f0f0f0; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 1400px; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #2c3e50; color: white; }
+        tr:hover { background: #f5f5f5; }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .btn { background: #3498db; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #2980b9; }
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #219653; }
+        #debug { background: #1a1a1a; color: #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-size: 14px; border-radius: 4px; max-height: 300px; overflow-y: auto; margin: 15px 0; display: block; }
+        .debug-line { margin: 5px 0; }
+        .timestamp { color: #888; }
+        .success-text { color: #00ff00; }
+        .error-text { color: #ff4444; }
+        .warning-text { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 NMS v4 Dashboard</h1>
+        
+        <div style="margin: 20px 0;">
+            <button class="btn" onclick="testConnection()">Test Connection</button>
+            <button class="btn btn-success" onclick="loadStreams()">Load Streams</button>
+            <button class="btn" onclick="clearDebug()">Clear Log</button>
+            <span style="margin-left: 20px;">
+                Auto-refresh: 
+                <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">
+                <span id="refreshStatus">(Every 5s)</span>
+            </span>
+        </div>
+        
+        <div id="status" class="status info">Click "Load Streams" to start</div>
+        
+        <div id="debug">
+            <div class="debug-line"><span class="timestamp">[Ready]</span> Debug console initialized</div>
+        </div>
+        
+        <div id="streamsContainer">
+            <h2>📡 Active Streams</h2>
+            <div id="streams">
+                <p>No data loaded yet.</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #3498db;">
+            <h3>🔧 Configuration</h3>
+            <p><strong>API Base URL:</strong> <code>http://localhost:8001</code></p>
+            <p><strong>Username:</strong> <code>admin</code></p>
+            <p><strong>Password (MD5):</strong> <code>0192023a7bbd73250516f069df18b500</code></p>
+            <p><strong>Working Endpoints:</strong></p>
+            <ul>
+                <li><code>/api/v1/login</code> (POST) - Get JWT token</li>
+                <li><code>/api/v1/streams</code> (GET) - Get stream list (requires auth)</li>
+                <li><code>/api/v1/stats</code> (GET) - Get server stats (requires auth)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let authToken = null;
+        let autoRefreshInterval = null;
+        
+        function debugLog(message, type = 'info') {
+            const debugDiv = document.getElementById('debug');
+            const timestamp = new Date().toLocaleTimeString();
+            let colorClass = '';
+            
+            switch(type) {
+                case 'success': colorClass = 'success-text'; break;
+                case 'error': colorClass = 'error-text'; break;
+                case 'warning': colorClass = 'warning-text'; break;
+                default: colorClass = '';
+            }
+            
+            const line = `<div class="debug-line"><span class="timestamp">[${timestamp}]</span> <span class="${colorClass}">${message}</span></div>`;
+            debugDiv.innerHTML += line;
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+        
+        function clearDebug() {
+            document.getElementById('debug').innerHTML = '';
+            debugLog('Debug cleared', 'info');
+        }
+        
+        function setStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        async function testConnection() {
+            setStatus('Testing connection...', 'info');
+            debugLog('Testing API endpoints...', 'info');
+            
+            // Test public endpoints first
+            const publicTests = [
+                { url: '/', method: 'GET', desc: 'Root endpoint' },
+                { url: '/live/stream1.flv', method: 'GET', desc: 'Stream playback' }
+            ];
+            
+            for (const test of publicTests) {
+                try {
+                    const response = await fetch(API_BASE + test.url, { method: test.method });
+                    debugLog(`${test.desc}: Status ${response.status}`, response.ok ? 'success' : 'warning');
+                } catch(error) {
+                    debugLog(`${test.desc}: ${error.message}`, 'error');
+                }
+            }
+            
+            // Test API endpoints
+            const apiTests = [
+                { url: '/api/v1/login', method: 'POST', desc: 'Login endpoint', needsBody: true },
+                { url: '/api/v1/streams', method: 'GET', desc: 'Streams API' },
+                { url: '/api/v1/stats', method: 'GET', desc: 'Stats API' }
+            ];
+            
+            for (const test of apiTests) {
+                try {
+                    const options = { method: test.method };
+                    if (test.needsBody) {
+                        options.headers = { 'Content-Type': 'application/json' };
+                        options.body = JSON.stringify({
+                            username: 'admin',
+                            password: '0192023a7bbd73250516f069df18b500'
+                        });
+                    }
+                    
+                    const response = await fetch(API_BASE + test.url, options);
+                    debugLog(`${test.desc}: Status ${response.status}`, response.ok ? 'success' : 'warning');
+                    
+                    if (response.ok && test.url === '/api/v1/login') {
+                        const data = await response.json();
+                        if (data.success) {
+                            authToken = data.data.token;
+                            debugLog('✓ Login successful, token received', 'success');
+                        }
+                    }
+                } catch(error) {
+                    debugLog(`${test.desc}: ${error.message}`, 'error');
+                }
+            }
+            
+            setStatus('Connection test complete', 'info');
+        }
+        
+        async function login() {
+            debugLog('Attempting to login...', 'info');
+            
+            try {
+                const response = await fetch(API_BASE + '/api/v1/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: '0192023a7bbd73250516f069df18b500'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Login failed: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Login failed');
+                }
+                
+                authToken = data.data.token;
+                debugLog('✓ Login successful', 'success');
+                return authToken;
+                
+            } catch(error) {
+                debugLog(`✗ Login failed: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        async function fetchWithAuth(url, options = {}) {
+            if (!authToken) {
+                await login();
+            }
+            
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            const finalOptions = { ...defaultOptions, ...options };
+            
+            try {
+                const response = await fetch(API_BASE + url, finalOptions);
+                
+                // If token expired, try to re-login
+                if (response.status === 401) {
+                    debugLog('Token expired, re-logging in...', 'warning');
+                    await login();
+                    finalOptions.headers.Authorization = `Bearer ${authToken}`;
+                    const retryResponse = await fetch(API_BASE + url, finalOptions);
+                    
+                    if (!retryResponse.ok) {
+                        throw new Error(`API request failed: ${retryResponse.status}`);
+                    }
+                    
+                    return retryResponse;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+                
+                return response;
+                
+            } catch(error) {
+                debugLog(`API call failed: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        async function loadStreams() {
+            setStatus('Loading streams...', 'info');
+            
+            try {
+                // Get streams
+                const streamsResponse = await fetchWithAuth('/api/v1/streams');
+                const streamsData = await streamsResponse.json();
+                
+                if (!streamsData.success) {
+                    throw new Error(streamsData.message || 'Failed to get streams');
+                }
+                
+                const streams = streamsData.data.streams || streamsData.streams || [];
+                
+                // Get server stats
+                const statsResponse = await fetchWithAuth('/api/v1/stats');
+                const statsData = await statsResponse.json();
+                
+                debugLog(`Loaded ${streams.length} stream(s)`, 'success');
+                
+                // Update display
+                displayStreams(streams, statsData.data || statsData);
+                
+            } catch(error) {
+                setStatus(`Error: ${error.message}`, 'error');
+                debugLog(`Failed to load streams: ${error.message}`, 'error');
+            }
+        }
+        
+        function displayStreams(streams, stats = {}) {
+            if (streams.length === 0) {
+                setStatus('No active streams', 'warning');
+                document.getElementById('streams').innerHTML = `
+                    <div class="status info">
+                        <h3>No streams active</h3>
+                        <p>Current streams: 0</p>
+                        <p>Server uptime: ${stats.uptime ? formatUptime(stats.uptime) : 'N/A'}</p>
+                        <p>Memory usage: ${stats.mem ? Math.round(stats.mem.heapUsed / 1024 / 1024) : 'N/A'} MB</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            setStatus(`Loaded ${streams.length} active stream(s)`, 'success');
+            
+            let html = `
+                <div style="margin-bottom: 20px; padding: 15px; background: #e8f4fc; border-radius: 5px;">
+                    <strong>Server Stats:</strong> 
+                    Uptime: ${stats.uptime ? formatUptime(stats.uptime) : 'N/A'} | 
+                    Memory: ${stats.mem ? Math.round(stats.mem.heapUsed / 1024 / 1024) : 'N/A'} MB | 
+                    CPU: ${stats.cpu ? stats.cpu.load.toFixed(2) : 'N/A'}%
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>App</th>
+                            <th>Stream Name</th>
+                            <th>Publishers</th>
+                            <th>Viewers</th>
+                            <th>Video Info</th>
+                            <th>Audio Info</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            streams.forEach(stream => {
+                const app = stream.app || 'live';
+                const name = stream.name || stream.stream || 'unknown';
+                const publishers = stream.publish?.clients || stream.publishers || 0;
+                const viewers = stream.play?.clients || stream.viewers || 0;
+                const videoCodec = stream.video?.codec || 'none';
+                const videoRes = stream.video ? `${stream.video.width || 0}x${stream.video.height || 0}` : '';
+                const videoFps = stream.video?.fps || '';
+                const audioCodec = stream.audio?.codec || 'none';
+                const audioRate = stream.audio?.samplerate || '';
+                const audioChannels = stream.audio?.channels || '';
+                
+                html += `
+                    <tr>
+                        <td><strong>${app}</strong></td>
+                        <td><code>${name}</code></td>
+                        <td><span style="font-weight: bold; color: ${publishers > 0 ? '#27ae60' : '#e74c3c'}">${publishers}</span></td>
+                        <td><span style="font-weight: bold; color: ${viewers > 0 ? '#27ae60' : '#e74c3c'}">${viewers}</span></td>
+                        <td>${videoCodec} ${videoRes} ${videoFps}${videoFps ? 'fps' : ''}</td>
+                        <td>${audioCodec} ${audioRate}${audioRate ? 'Hz' : ''} ${audioChannels}${audioChannels ? 'ch' : ''}</td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 12px; margin: 2px;" 
+                                    onclick="playStream('${app}', '${name}')">
+                                ▶ Play
+                            </button>
+                            <button class="btn" style="padding: 5px 10px; font-size: 12px; margin: 2px; background: #95a5a6;" 
+                                    onclick="copyURL('${app}', '${name}')">
+                                📋 Copy URL
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            document.getElementById('streams').innerHTML = html;
+        }
+        
+        function formatUptime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${hours}h ${minutes}m ${secs}s`;
+        }
+        
+        function playStream(app, name) {
+            const url = `http://localhost:8001/${app}/${name}.flv`;
+            window.open(url, '_blank');
+            debugLog(`Opening stream: ${url}`, 'info');
+        }
+        
+        function copyURL(app, name) {
+            const url = `http://localhost:8001/${app}/${name}.flv`;
+            navigator.clipboard.writeText(url).then(() => {
+                alert(`URL copied to clipboard:\n${url}`);
+                debugLog(`Copied URL: ${url}`, 'success');
+            }).catch(err => {
+                debugLog(`Failed to copy URL: ${err}`, 'error');
+            });
+        }
+        
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            
+            if (checkbox.checked) {
+                autoRefreshInterval = setInterval(loadStreams, 5000);
+                document.getElementById('refreshStatus').textContent = '(Every 5s)';
+                debugLog('Auto-refresh enabled', 'success');
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                document.getElementById('refreshStatus').textContent = '(Off)';
+                debugLog('Auto-refresh disabled', 'warning');
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            debugLog('Dashboard initialized', 'success');
+            debugLog('Working endpoints: /api/v1/login, /api/v1/streams, /api/v1/stats', 'info');
+            toggleAutoRefresh(); // Start auto-refresh
+        };
+    </script>
+</body>
+</html>

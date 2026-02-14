@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Watch Stream";
+    var streamKey = ViewBag.StreamKey;
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card bg-black shadow-lg border-0 overflow-hidden" style="border-radius: 20px;">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center py-3">
+                    <h5 class="text-white mb-0">🎥 Live Stream</h5>
+                    <span id="statusBadge" class="badge bg-danger pulse">LIVE</span>
+                </div>
+
+                <div class="card-body p-0 position-relative" style="background: #000; min-height: 500px;">
+                    <video id="videoElement" controls autoplay muted style="width: 100%; height: auto; display: block;"></video>
+
+                    <div id="videoOverlay" class="position-absolute top-50 start-50 translate-middle text-center text-white" style="display:none;">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <p id="overlayText">Connecting to server...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body text-center py-5">
+                    <div class="avatar-lg bg-light-primary rounded-circle mx-auto mb-4">
+                        <i class="fas fa-info-circle text-primary fa-2x mt-3"></i>
+                    </div>
+                    <h4>Session Alerts</h4>
+                    <p class="text-muted small">Make sure your internet connection is stable to avoid buffering.</p>
+                    <hr>
+                    <button onclick="location.reload()" class="btn btn-outline-primary rounded-pill w-100">
+                        <i class="fas fa-sync-alt me-2"></i> Refresh Stream
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+    <script>
+        if (flvjs.isSupported()) {
+            var videoElement = document.getElementById('videoElement');
+            var overlay = document.getElementById('videoOverlay');
+            // Connect to proxy (port 20000)
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: 'http://localhost:20000/live/@(streamKey).flv'
+            });
+
+            flvPlayer.attachMediaElement(videoElement);
+
+            try {
+                flvPlayer.load();
+                flvPlayer.play();
+            } catch (e) {
+                overlay.style.display = 'block';
+                document.getElementById('overlayText').innerText = "An error occurred while loading the stream.";
+            }
+
+            // Error handling
+            flvPlayer.on(flvjs.Events.ERROR, (errType, errDetail) => {
+                console.error("FLV Error:", errType, errDetail);
+                overlay.style.display = 'block';
+                document.getElementById('overlayText').innerText = "Stream is currently unavailable or disconnected.";
+                document.getElementById('statusBadge').className = "badge bg-secondary";
+                document.getElementById('statusBadge').innerText = "OFFLINE";
+            });
+        }
+    </script>
+}

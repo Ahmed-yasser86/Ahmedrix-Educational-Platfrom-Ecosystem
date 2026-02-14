@@ -1,0 +1,204 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server_container
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Ahmed@862205
+    volumes:
+      - ./database:/var/opt/mssql/backup
+    entrypoint: >
+      /bin/bash -c "
+      /opt/mssql/bin/sqlservr & 
+      sleep 90; 
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -C -i /var/opt/mssql/backup/setup.sql;
+      wait"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -Q 'SELECT 1' -C"]
+      interval: 10s
+      timeout: 10s
+      retries: 25
+    networks:
+      - chat_network
+
+  dotnet-api:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform"
+      dockerfile: Dockerfile
+    container_name: dotnet_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5076:5076"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=aspnet-OnlineCoursesPlatform;User Id=sa;Password=Ahmed@862205;MultipleActiveResultSets=True;TrustServerCertificate=True;
+    networks:
+      - chat_network
+
+  redis-server:
+    image: redis:alpine
+    container_name: chat_redis
+    restart: always
+    networks:
+      - chat_network
+
+  #  Video Streaming Infrastructure 
+
+  video-bridge:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server1"
+      dockerfile: Dockerfile
+    container_name: video_bridge
+    command: node bridge.js
+    restart: always
+    ports:
+      - "3001:3001"
+    networks:
+      - chat_network
+
+  nms-server1:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server1"
+      dockerfile: Dockerfile
+    container_name: nms_server1
+    command: node server1.js
+    restart: always
+    ports:
+      - "1936:1936"
+      - "8001:8001"
+    networks:
+      - chat_network
+
+  nms-server2:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server2"
+      dockerfile: Dockerfile
+    container_name: nms_server2
+    command: node server2.js
+    restart: always
+    ports:
+      - "1937:1937"
+      - "8002:8002"
+    networks:
+      - chat_network
+
+  nms-server3:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server3"
+      dockerfile: Dockerfile
+    container_name: nms_server3
+    command: node server3.js
+    restart: always
+    ports:
+      - "1938:1938"
+      - "8003:8003"
+    networks:
+      - chat_network
+
+  video-lb:
+    image: haproxy:latest
+    container_name: video_lb
+    restart: always
+    volumes:
+      - "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/haproxy/haproxy-video.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+    ports:
+      - "20000:20000"
+    depends_on:
+      - nms-server1
+      - nms-server2
+      - nms-server3
+    networks:
+      - chat_network
+
+  # Chat Microservices 
+
+  chat-app-1:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      dockerfile: Dockerfile
+    container_name: my-secret-chat-chat-app-1-1
+    restart: always
+    environment:
+      - APPID=Alpha
+      - PORT=3141 
+      - REDIS_HOST=redis-server
+      - DOTNET_API_URL=http://dotnet-api:5076/api/ChatSync/sync
+    depends_on:
+      - redis-server
+      - dotnet-api
+    networks:
+      - chat_network
+
+  chat-app-2:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      dockerfile: Dockerfile
+    container_name: my-secret-chat-chat-app-2-1
+    restart: always
+    environment:
+      - APPID=Beta
+      - PORT=3141
+      - REDIS_HOST=redis-server
+      - DOTNET_API_URL=http://dotnet-api:5076/api/ChatSync/sync
+    depends_on:
+      - redis-server
+      - dotnet-api
+    networks:
+      - chat_network
+
+  chat-app-3:
+    build: 
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      dockerfile: Dockerfile
+    container_name: my-secret-chat-chat-app-3-1
+    restart: always
+    environment:
+      - APPID=Gamma
+      - PORT=3141
+      - REDIS_HOST=redis-server
+      - DOTNET_API_URL=http://dotnet-api:5076/api/ChatSync/sync
+    depends_on:
+      - redis-server
+      - dotnet-api
+    networks:
+      - chat_network
+
+  chat-lb:
+    image: haproxy:latest
+    container_name: chat_lb
+    restart: always
+    volumes:
+      - "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat/haproxy-chat.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+    ports:
+      - "54321:9999"  
+      - "61234:7777"  
+    depends_on:
+      - chat-app-1
+      - chat-app-2
+      - chat-app-3
+    networks:
+      - chat_network
+
+  webrtc-proto:
+    build:
+      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/WebRTC Vedio Platfrom"
+      dockerfile: Dockerfile
+    container_name: webrtc_proto_app
+    restart: always
+    ports:
+      - "8448:3000"
+    depends_on:
+      - dotnet-api
+    networks:
+      - chat_network
+
+networks:
+  chat_network:
+    driver: bridge

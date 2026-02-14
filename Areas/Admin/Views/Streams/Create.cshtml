@@ -1,0 +1,49 @@
+﻿@model OnlineCoursesPlatform.Areas.Admin.Models.StartStreamViewModel
+
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h3>Live Stream Settings - Master Console</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="form-group mb-3">
+                <label class="form-label">Select Instructor</label>
+                <select asp-for="SelectedInstructorId" id="instructorSelect" asp-items="Model.AvailableInstructors" class="form-select">
+                    <option value="">-- Who are you? --</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="form-label">Select Course</label>
+                <select asp-for="SelectedCategoryId" id="categorySelect" class="form-select">
+                    <option value="">-- Choose Instructor First --</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg">Generate Stream Keys</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // كود سحري عشان لما يختار المدرس، الكورسات تنزل لوحدها
+        $('#instructorSelect').change(function() {
+            var instructorId = $(this).val();
+            if (instructorId) {
+                $.getJSON('@Url.Action("GetCategoriesByInstructor")?instructorId=' + instructorId, function(data) {
+                    var items = '<option value="">-- Select Course --</option>';
+                    $.each(data, function(i, category) {
+                        items += "<option value='" + category.value + "'>" + category.text + "</option>";
+                    });
+                    $('#categorySelect').html(items);
+                });
+            }
+        });
+    </script>
+}

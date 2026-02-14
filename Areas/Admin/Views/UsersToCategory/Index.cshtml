@@ -1,0 +1,66 @@
+﻿@model IEnumerable<OnlineCoursesPlatform.Entities.Category>
+@using OnlineCoursesPlatform.Extensions
+@using OnlineCoursesPlatform.Areas.Admin.Models
+
+<h3 class="mt-4">Add Members to Category</h3>
+<hr />
+
+<form id="MembersToCategory" asp-action="Index">
+    @Html.AntiForgeryToken() <!-- Important for security -->
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <h4>Category</h4>
+                <select id="CategoryId" name="CategoryId" class="form-control" asp-items="Model.ConvertToSelectedListItems(0)">
+                    <option value="0">--Please choose a Category--</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="saveProgressBar" class="progress" style="display: none; margin: 20px 0;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated"
+             role="progressbar"
+             style="width: 100%">
+            <span class="progress-text">Saving Users...</span>
+        </div>
+    </div>
+
+    <div id="alert_placeholder"></div>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-group text-right">
+                <button type="button" id="SaveSelectedUsers" name="SaveSelectedUsers" class="btn btn-outline-info">
+                    <span class="button-text">Save</span>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <h4>Members</h4>
+            <div class="form-group">
+                <div id="UsersCheckList">
+                    <partial name="_UsersListViewPartial" model="new UsersCategoryListModel { CategoryId = 0, Users = null, UserSelected = null }" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/UsersToCategory.js"></script>
+    <script src="~/js/BootstrapAlerts.js"></script>
+}

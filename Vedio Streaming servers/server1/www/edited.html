@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NMS v4 PRO Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #dfe6e9; padding: 12px; text-align: left; }
+        th { background: #0984e3; color: white; }
+        tr:nth-child(even) { background: #f8f9fa; }
+        #status { padding: 10px; margin-bottom: 10px; border-radius: 4px; font-weight: bold; }
+        .status-ok { background: #dff9fb; color: #0984e3; }
+        .error { background: #fab1a0; color: #d63031; padding: 10px; border-radius: 4px; }
+        .debug { background: #2d3436; color: #00ff00; padding: 15px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 12px; border-radius: 5px; max-height: 200px; overflow-y: auto; }
+        .count { font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .publisher-count { background: #55efc4; color: #00b894; }
+        .viewer-count { background: #81ecec; color: #00cec9; }
+        .live-badge { background: #ff7675; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 NMS Multi-Server Dashboard</h1>
+        <div id="status" class="status-ok">Initializing...</div>
+        
+        <div class="debug" id="debug">
+            <strong>Debug Log:</strong><br>
+        </div>
+
+        <div id="streams"></div>
+    </div>
+
+    <script>
+        // التعديل الجوهري: نكلم البروكسي (البوابة 20000)
+        const API_URL = 'http://127.0.0.1:20000'; 
+        const USER = 'admin';
+        const PASSWORD_MD5 = '0192023a7bbd73250516f069df18b500'; // admin123
+
+        let authToken = null;
+
+        function debugLog(msg) {
+            const debugDiv = document.getElementById('debug');
+            const timestamp = new Date().toLocaleTimeString();
+            debugDiv.innerHTML += `[${timestamp}] ${msg}<br>`;
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+
+        async function login() {
+            try {
+                debugLog('Attempting login via HAProxy...');
+                const res = await fetch(`${API_URL}/api/v1/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: USER, password: PASSWORD_MD5 })
+                });
+
+                if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+                
+                const data = await res.json();
+                if (data.success && data.data.token) {
+                    debugLog('Login successful! Token acquired.');
+                    return data.data.token;
+                }
+                throw new Error(data.message || 'Login failed');
+            } catch (err) {
+                debugLog(`LOGIN ERROR: ${err.message}`);
+                throw err;
+            }
+        }
+
+        async function getStreams() {
+            if (!authToken) {
+                authToken = await login();
+            }
+
+            debugLog('Fetching active streams...');
+            const res = await fetch(`${API_URL}/api/v1/streams`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (res.status === 401) { // لو التوكن خلصت صلاحيتها
+                debugLog('Token expired, retrying login...');
+                authToken = null;
+                return getStreams();
+            }
+
+            const data = await res.json();
+            return data.data.streams || [];
+        }
+
+        async function updateDashboard() {
+            try {
+                const streams = await getStreams();
+                const statusDiv = document.getElementById('status');
+                const streamsDiv = document.getElementById('streams');
+                
+                statusDiv.className = 'status-ok';
+                statusDiv.innerHTML = `✅ Connected to Load Balancer | Active Streams: ${streams.length}`;
+
+                if (streams.length === 0) {
+                    streamsDiv.innerHTML = '<p style="text-align:center; padding:20px; color:#636e72;">No active streams found on any node.</p>';
+                    return;
+                }
+
+                let html = `<table>
+                    <tr>
+                        <th>Node/App</th>
+                        <th>Stream Name</th>
+                        <th>Status</th>
+                        <th>Publishers</th>
+                        <th>Viewers</th>
+                        <th>Video Codec</th>
+                        <th>Resolution</th>
+                    </tr>`;
+
+                // تحويل الكائن (Object) لمصفوفة لو السيرفر بعته كـ Map
+                const streamList = Array.isArray(streams) ? streams : Object.values(streams);
+
+                streamList.forEach(s => {
+                    const app = s.app || 'live';
+                    const name = s.name || 'unknown';
+                    const hasPublisher = !!s.publisher;
+                    const viewers = s.subscribers ? s.subscribers.length : 0;
+                    const vCodec = s.publisher?.videoCodec || 'N/A';
+                    const res = s.publisher ? `${s.publisher.videoWidth}x${s.publisher.videoHeight}` : '-';
+
+                    html += `<tr>
+                        <td><small>Node</small><br><strong>${app}</strong></td>
+                        <td><code>${name}</code></td>
+                        <td>${hasPublisher ? '<span class="live-badge">● LIVE</span>' : '⚪ Idle'}</td>
+                        <td><span class="count publisher-count">${hasPublisher ? 1 : 0}</span></td>
+                        <td><span class="count viewer-count">${viewers}</span></td>
+                        <td>${vCodec}</td>
+                        <td>${res}</td>
+                    </tr>`;
+                });
+
+                html += '</table>';
+                streamsDiv.innerHTML = html;
+
+            } catch (e) {
+                document.getElementById('status').className = 'error';
+                document.getElementById('status').innerHTML = `❌ Error: ${e.message}`;
+            }
+        }
+
+        // تشغيل التحديث التلقائي كل 5 ثواني
+        updateDashboard();
+        setInterval(updateDashboard, 5000);
+
+    </script>
+</body>
+</html>

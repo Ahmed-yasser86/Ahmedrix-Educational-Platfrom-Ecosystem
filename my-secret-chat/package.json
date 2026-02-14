@@ -1,0 +1,10 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.13.5",
+    "redis": "^3.1.2",
+    "websocket": "^1.0.34"
+  }
+}

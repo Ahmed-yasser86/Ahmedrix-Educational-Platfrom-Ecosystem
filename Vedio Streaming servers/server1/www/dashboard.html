@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NMS v4 Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #eee; }
+        #status { color: green; font-weight: bold; }
+        .error { color: red; }
+        .debug { background: #f5f5f5; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px; }
+        .count { font-weight: bold; }
+        .publisher-count { color: #27ae60; }
+        .viewer-count { color: #3498db; }
+    </style>
+</head>
+<body>
+    <h1>Node-Media-Server v4 Dashboard</h1>
+    <div id="status">Loading...</div>
+    <div id="debug"></div>
+    <div id="streams"></div>
+
+    <script>
+        const API_URL = 'http://localhost:8001';
+        const USER = 'admin';
+        const PASSWORD_MD5 = '0192023a7bbd73250516f069df18b500';
+
+        function debugLog(msg) {
+            const debugDiv = document.getElementById('debug');
+            const timestamp = new Date().toLocaleTimeString();
+            debugDiv.innerHTML += `[${timestamp}] ${msg}<br>`;
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+
+        async function login() {
+            debugLog('Logging in...');
+            const res = await fetch(API_URL + '/api/v1/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: USER, password: PASSWORD_MD5 })
+            });
+            const data = await res.json();
+            debugLog(`Login response: ${JSON.stringify(data).substring(0, 200)}...`);
+            
+            if (data.success) return data.data.token;
+            throw new Error('Login failed: ' + data.message);
+        }
+
+        async function getStreams(token) {
+            debugLog('Fetching streams...');
+            const res = await fetch(API_URL + '/api/v1/streams', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            debugLog(`Streams response: ${JSON.stringify(data).substring(0, 300)}...`);
+            
+            if (data.success) return data.data.streams;
+            throw new Error('Failed to fetch streams: ' + data.message);
+        }
+
+        async function load() {
+            try {
+                document.getElementById('debug').innerHTML = '<h3>Debug Log:</h3>';
+                document.getElementById('status').innerHTML = 'Loading...';
+                
+                const token = await login();
+                const streams = await getStreams(token);
+                
+                document.getElementById('status').innerHTML = 'Loaded ' + streams.length + ' stream(s)';
+                
+                if (streams.length === 0) {
+                    document.getElementById('streams').innerHTML = '<p>No active streams.</p>';
+                    return;
+                }
+
+                // DEBUG: Show raw stream data
+                debugLog(`RAW STREAM DATA: ${JSON.stringify(streams[0])}`);
+                
+                let html = '<table><tr><th>App</th><th>Stream</th><th>Publishers</th><th>Viewers</th><th>Video</th><th>Audio</th><th>Status</th></tr>';
+                
+                streams.forEach(s => {
+                    // EXTRACT CORRECT DATA FROM THE ACTUAL STRUCTURE
+                    const app = s.app || 'live';
+                    const name = s.name || s.stream || 'unknown';
+                    
+                    // PUBLISHER COUNT: If publisher object exists = 1, otherwise 0
+                    const hasPublisher = s.publisher && Object.keys(s.publisher).length > 0;
+                    const publishers = hasPublisher ? 1 : 0;
+                    
+                    // VIEWER COUNT: Use subscribers field
+                    const viewers = s.subscribers || s.subscriberCount || 0;
+                    
+                    // VIDEO/AUDIO INFO: Get from publisher object
+                    const videoCodec = s.publisher?.videoCodec || s.video?.codec || 'none';
+                    const videoWidth = s.publisher?.videoWidth || s.video?.width || '';
+                    const videoHeight = s.publisher?.videoHeight || s.video?.height || '';
+                    const videoFps = s.publisher?.videoFramerate || s.video?.fps || '';
+                    
+                    const audioCodec = s.publisher?.audioCodec || s.audio?.codec || 'none';
+                    const audioRate = s.publisher?.audioSamplerate || s.audio?.samplerate || '';
+                    const audioChannels = s.publisher?.audioChannels || s.audio?.channels || '';
+                    
+                    // Connection info
+                    const ip = s.publisher?.ip || 'N/A';
+                    const protocol = s.publisher?.protocol || 'N/A';
+                    
+                    debugLog(`Stream ${name}: hasPublisher=${hasPublisher}, subscribers=${viewers}`);
+                    
+                    html += `<tr>
+                        <td>${app}</td>
+                        <td><strong>${name}</strong></td>
+                        <td><span class="count publisher-count">${publishers}</span></td>
+                        <td><span class="count viewer-count">${viewers}</span></td>
+                        <td>${videoCodec !== 0 ? videoCodec : 'H.264'} ${videoWidth}x${videoHeight} ${videoFps}${videoFps ? 'fps' : ''}</td>
+                        <td>${audioCodec !== 0 ? audioCodec : 'AAC'} ${audioRate}${audioRate ? 'Hz' : ''} ${audioChannels}${audioChannels ? 'ch' : ''}</td>
+                        <td>${hasPublisher ? '🟢 Live' : '🔴 Offline'}</td>
+                    </tr>`;
+                    
+                    // Add a row with connection details
+                    if (hasPublisher) {
+                        html += `<tr style="background: #f9f9f9;">
+                            <td colspan="7" style="font-size: 12px; padding: 5px 10px;">
+                                <strong>Publisher:</strong> ${ip} via ${protocol} | 
+                                <strong>Bytes:</strong> ${formatBytes(s.publisher.inBytes || 0)} | 
+                                <strong>ID:</strong> ${s.publisher.id}
+                            </td>
+                        </tr>`;
+                    }
+                });
+                
+                html += '</table>';
+                document.getElementById('streams').innerHTML = html;
+                
+            } catch (e) {
+                document.getElementById('status').innerHTML = '<span class="error">Error: ' + e.message + '</span>';
+                debugLog('ERROR: ' + e.message);
+            }
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        load();
+        setInterval(load, 5000);
+    </script>
+</body>
+</html>

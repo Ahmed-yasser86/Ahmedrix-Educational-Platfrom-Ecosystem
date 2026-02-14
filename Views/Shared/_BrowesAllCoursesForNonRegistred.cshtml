@@ -1,0 +1,127 @@
+﻿@using OnlineCoursesPlatform.Entities
+@model List<Category>
+
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="category-hero bg-gradient-primary py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold text-white mb-3">Explore Our Course Categories</h1>
+                    <p class="lead text-white-50 mb-4">Discover expertly curated categories designed to help you master new skills with AI-powered learning paths.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-white text-primary px-3 py-2 me-2 mb-2">
+                            <i class="fas fa-graduation-cap me-1"></i> 500+ Courses
+                        </span>
+                        <span class="badge bg-white text-primary px-3 py-2 me-2 mb-2">
+                            <i class="fas fa-chart-line me-1"></i> Career Paths
+                        </span>
+                        <span class="badge bg-white text-primary px-3 py-2 me-2 mb-2">
+                            <i class="fas fa-robot me-1"></i> AI Assisted
+                        </span>
+                    </div>
+                </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="section-title mb-0">All Categories</h2>
+                        <p class="text-muted mb-0">@Model.Count categories available</p>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Grid -->
+        @await Html.PartialAsync("_DisplayCardRowPartial", Model)
+
+    <div class="row mt-7 pt-5">
+        <div class="col-12">
+            <div class="bg-light rounded-4 p-5">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="stat-item">
+                            <h3 class="display-6 fw-bold text-primary">@Model.Count</h3>
+                            <p class="text-muted mb-0">Categories</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+<style>
+    /* Hero Section */
+    .category-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .category-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M500,97C126.7,96.3,0.8,19.8,0,0v100l1000,0V1C1000,19.4,873.3,97.8,500,97z" fill="white"/></svg>') bottom center no-repeat;
+            background-size: 100% auto;
+        }
+
+    /* Search Box */
+    .category-search .form-control:focus {
+        box-shadow: none;
+    }
+
+    /* Section Title */
+    .section-title {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+    /* Stats Section */
+    .stat-item {
+        transition: transform 0.3s ease;
+    }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .category-hero {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .display-5 {
+            font-size: 2.5rem;
+        }
+
+        .bg-light.rounded-4.p-5 {
+            padding: 2rem !important;
+        }
+    }
+</style>

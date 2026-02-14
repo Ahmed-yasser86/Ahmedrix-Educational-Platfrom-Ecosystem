@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 mb-3">About Ahmderx : An Online Courses Platform</h1>
+        <p class="lead text-muted">Empowering learners with intelligent, accessible education</p>
+    </div>
+
+    <!-- Mission -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="mb-4">Our Mission</h2>
+            <p class="mb-3">To democratize education by providing high-quality, AI-enhanced learning experiences that adapt to each student's unique needs and pace.</p>
+            <p class="mb-0">We believe that everyone deserves access to world-class education, regardless of their location, background, or schedule.</p>
+        </div>
+        <div class="col-lg-6">
+            <div class="text-center">
+                <i class="fas fa-bullseye fa-7x text-primary"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vision -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-lg-2">
+            <h2 class="mb-4">Our Vision</h2>
+            <p class="mb-3">To become the leading global platform where artificial intelligence and human expertise converge to create transformative learning journeys.</p>
+            <p class="mb-0">We envision a future where education is personalized, engaging, and accessible to all, powered by intelligent technology.</p>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+            <div class="text-center">
+                <i class="fas fa-eye fa-7x text-primary"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Values -->
+    <div class="mb-5">
+        <h2 class="text-center mb-5">Our Core Values</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                    </div>
+                    <h4>Learner-Centered</h4>
+                    <p class="text-muted">Every decision we make prioritizes the learner's success and experience.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-lightbulb fa-3x text-primary"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p class="text-muted">We continuously explore new technologies to enhance learning outcomes.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-handshake fa-3x text-primary"></i>
+                    </div>
+                    <h4>Integrity</h4>
+                    <p class="text-muted">We maintain transparency and ethical standards in all our operations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Info -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">Company Information</h2>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-building me-2 text-primary"></i>Founded</h5>
+                    <p class="text-muted">2023</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-map-marker-alt me-2 text-primary"></i>Location</h5>
+                    <p class="text-muted">Egypt - Global Online Platform</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-users me-2 text-primary"></i>Team</h5>
+                    <p class="text-muted">Passionate educators and technologists</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h5><i class="fas fa-globe me-2 text-primary"></i>Reach</h5>
+                    <p class="text-muted">Serving students worldwide</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center bg-light p-5 rounded">
+        <h3 class="mb-4">Join Our Learning Community</h3>
+        <p class="mb-4">Start your learning journey with us today and experience education reimagined.</p>
+        <a asp-controller="Categories" asp-action="Index" class="btn btn-light btn-lg">
+            <i class="fas fa-search me-2"></i>Browse Available Courses
+        </a>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    h2, h4 {
+        color: #2c3e50;
+    }
+</style>

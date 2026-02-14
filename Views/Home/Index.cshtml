@@ -1,24 +1,397 @@
 ﻿
+@using Microsoft.AspNetCore.Identity
+@using OnlineCoursesPlatform.Data
+@inject UserManager<ApplicationUser> UserManager
+@model CategoryDetailsModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "My Learning Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="text-white mb-4">
+                    <i class="fas fa-graduation-cap me-3"></i>
+                    My Learning Dashboard
+                </h1>
+                <p class="text-white-50 mb-4 lead">
+                    Welcome to your personalized learning journey. Explore your enrolled courses and continue your education with AI-powered assistance.
+                </p>
+                <div class="d-flex gap-3">
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-light btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>Browse More Courses
+                    </a>
+                    </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                        <div class="d-flex gap-3">
+                        <a href="#myCourses" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-book-open me-2"></i>View My Courses
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="fas fa-brain fa-7x text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<div class="modal fade" id="UserLoginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <partial name="_UserLoginPartial" />
-</div>
-
-
-@section Scripts
+@if (Model.CategoryItems != null)
 {
+    <!-- My Courses Section -->
+    <div class="container-fluid py-5" id="myCourses">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h2 class="text-primary mb-2">
+                        <i class="fas fa-book me-2"></i>
+                        My Enrolled Courses
+                    </h2>
+                    <p class="text-muted">Continue learning with your selected courses</p>
+                </div>
+                <div>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 me-2">
+                        <i class="fas fa-layer-group me-1"></i>
+                        @Model.CategoryItems.Count() Categories
+                    </span>
+                    <a asp-controller="CategoriesToUser" asp-action="Index" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add More Courses
+                    </a>
+                </div>
+            </div>
+
+            @if (Model.CategoryItems.Count() > 0)
+            {
+                <div class="row">
+                    @foreach (var cat in Model.CategoryItems)
+                    {
+                        var itemCount = cat.Items?.Count() ?? 0;
+
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
+                                <div class="card-header bg-white border-0 pb-0 pt-4">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h4 class="card-title mb-1">
+                                                <a href="#collapse_@cat.Id" class="text-dark text-decoration-none"
+                                                   data-bs-toggle="collapse" data-bs-target="#collapse_@cat.Id">
+                                                    @cat.Title
+                                                </a>
+                                            </h4>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                <i class="fas fa-graduation-cap me-1"></i>
+                                                @itemCount @(itemCount == 1 ? "Course" : "Courses")
+                                            </span>
+                                        </div>
+                                        <button class="btn btn-link text-primary"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse_@cat.Id">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="collapse_@cat.Id" class="collapse">
+                                    <div class="card-body pt-0">
+                                        <div class="category-items-list">
+                                            @if (cat.Items != null && cat.Items.Any())
+                                            {
+                                                @foreach (var item in cat.Items)
+                                                {
+                                                    <div class="course-item p-3 mb-3 rounded bg-light">
+                                                        <div class="d-flex align-items-start">
+                                                            @if (!string.IsNullOrEmpty(item.MediaImagePath))
+                                                            {
+                                                                <div class="course-thumbnail me-3">
+                                                                    <img src="@item.MediaImagePath"
+                                                                         class="rounded"
+                                                                         width="80"
+                                                                         height="80"
+                                                                         alt="@item.CategoryItemTitle"
+                                                                         style="object-fit: cover;">
+                                                                </div>
+                                                            }
+                                                            <div class="flex-grow-1">
+                                                                <h5 class="mb-1">
+                                                                    <a asp-controller="Content" asp-action="Index"
+                                                                       asp-route-CategoryItemId="@item.CategoryItemId"
+                                                                       class="text-dark text-decoration-none">
+                                                                        @item.CategoryItemTitle
+                                                                    </a>
+                                                                </h5>
+                                                                <p class="text-muted small mb-2">
+                                                                    @item.CategoryItemDescription
+                                                                </p>
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <a asp-controller="Content" asp-action="Index"
+                                                                       asp-route-CategoryItemId="@item.CategoryItemId"
+                                                                       class="btn btn-sm btn-outline-primary">
+                                                                        <i class="fas fa-play-circle me-1"></i>
+                                                                        Start Learning
+                                                                    </a>
+                                                                    <span class="badge bg-info bg-opacity-10 text-info">
+                                                                        <i class="fas fa-clock me-1"></i>
+                                                                        AI-Enhanced
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="text-center py-4">
+                                                    <i class="fas fa-book-open fa-2x text-muted mb-3"></i>
+                                                    <p class="text-muted">No courses available in this category</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer bg-white border-0 pt-0">
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: @(new Random().Next(25, 90))%"></div>
+                                    </div>
+                                    <small class="text-muted mt-2 d-block">Learning Progress</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <!-- Empty State for Enrolled Courses -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-book-open fa-4x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted mb-3">You're Not Enrolled in Any Courses Yet</h4>
+                    <p class="text-muted mb-4">Discover amazing courses and start your learning journey today</p>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="CategoriesToUser" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Browse Available Courses
+                        </a>
+                    }
+                    else
+                    {
+                         <a asp-controller="Categories" asp-action="Index" class="btn btn-light btn-lg">
+                                                          <i class="fas fa-search me-2"></i>Browse Available Courses
+                         </a>
+                    }
+                    
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <!-- Default Home Content (for non-logged in users) -->
+    <partial name="_DefaultHomePageContentPartial" model="@Model.Categories" />
+}
+
+<!-- Featured Categories Section -->
+<div class="container-fluid py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="text-primary mb-3">
+                <i class="fas fa-star me-2"></i>
+                Featured Categories
+            </h2>
+            <p class="text-muted">Explore our most popular AI-enhanced learning paths</p>
+        </div>
+
+        <div class="row">
+            @if (Model.Categories != null && Model.Categories.Any())
+            {
+                @foreach (var category in Model.Categories.Take(6))
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm hover-lift">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                                        <i class="fas fa-brain text-primary fa-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title mb-1">@category.Title</h5>
+                                        <p class="text-muted small mb-0">
+                                            @(category.Description?.Length > 100 ? category.Description.Substring(0, 100) + "..." : category.Description ?? "AI-enhanced learning path")
+                                        </p>
+                                    </div>
+                                </div>
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-controller="CategoriesToUser" asp-action="Index"
+                                    class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    Enroll Now
+                                    </a>
+                                }
+                                else
+                                {
+                                    
+                    <a class="nav-link text-dark" asp-area="Identity"
+                       data-bs-toggle="modal" data-bs-target="#UserRegistrationModal">
+                        <i class="fas fa-user-plus mr-1 text-info"></i>Register
+                    </a>
+      
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="Categories" asp-action="Index" class="btn btn-light btn-lg">
+                <i class="fas fa-compass me-2"></i>
+                Explore All Courses 
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- AI Learning Assistant -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="bg-primary bg-opacity-10 rounded p-5">
+                    <h3 class="text-primary mb-4">
+                        <i class="fas fa-robot me-2"></i>
+                        Your AI Learning Assistant
+                    </h3>
+                    <p class="mb-4">Get personalized learning recommendations, track your progress, and receive intelligent insights to accelerate your learning journey.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-primary">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            Chat with AI Assistant
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            View Progress Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="/images/ai-assistant.png" alt="AI Learning Assistant" class="img-fluid" style="max-height: 300px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+@* <div class="modal fade" id="UserLoginModal">
+    <partial name="_UserLoginPartial" model="new LoginModel()" />
+</div>
+
+<div class="modal fade" id="UserRegistrationModal">
+    <partial name="_UserRegistrationPartial" model="new RegistrationModel()" />
+</div> *@
+
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-
     }
 
+    <script>
+        // Auto-open first category for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstCategory = document.querySelector('.card-title a');
+            if (firstCategory) {
+                const collapseId = firstCategory.getAttribute('data-bs-target');
+                const collapseElement = document.querySelector(collapseId);
+                if (collapseElement) {
+                    new bootstrap.Collapse(collapseElement, {
+                        toggle: false
+                    }).show();
+                }
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 }
+
+<style>
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        }
+
+    .course-item {
+        transition: background-color 0.3s ease;
+    }
+
+        .course-item:hover {
+            background-color: rgba(13, 110, 253, 0.05) !important;
+        }
+
+    .category-items-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+        .category-items-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .category-items-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .category-items-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+            .category-items-list::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+    .card-header {
+        cursor: pointer;
+    }
+
+    .progress {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+    }
+</style>

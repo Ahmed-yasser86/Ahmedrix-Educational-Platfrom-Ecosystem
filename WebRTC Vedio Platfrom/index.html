@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join A Call - WebRTC</title>
+
+  <link rel="stylesheet" href="screen.css">
+</head>
+<body>
+
+<main id="interface">
+  <header id="header" role="banner">
+    <h1>Join A Call</h1>
+    <button class="join" id="call-button" type="button">Join Call</button>
+
+   <button id="filter-button" type="button">Filter: Normal</button>
+  </header>
+
+
+  <article id="videos">
+   
+    <h2 class="preserve-access">Video Call</h2>
+    <video id="self" autoplay muted playsinline poster="placeholder.png" ></video>
+    	<p id = 'mic-status' aria-hidden = 'true' >Remote peer is muted.</p>
+    <video id="peer" autoplay playsinline poster="placeholder.png"></video>
+  </article>
+
+   <aside id="chat" >
+         <h2 class="preserve-access">Text Chat</h2>
+         <ol id="chat-log"></ol>
+          <form id="chat-form" action="#null">
+            <input id="chat-msg" name="chat-msg" type="text" autocomplete="off" placeholder="Type message here..." />
+          
+          <label for="chat-img-btn" class="preserve-access">Send Image</label>
+         <button type="button" id="chat-img-btn">Image</button> 
+
+            <button type="submit" id="chat-btn">Send</button>
+     </aside>
+
+
+
+
+     <footer id="footer">
+  <button
+    id="toggle-mic"
+    type="button"
+    role="switch"
+    aria-label="Toggle microphone"
+    aria-checked="true">
+    Mic
+  </button>
+
+  <button
+    id="toggle-cam"
+    type="button"
+    role="switch"
+    aria-label="Toggle camera"
+    aria-checked="true">
+    Cam
+  </button>
+</footer>
+
+</main>
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

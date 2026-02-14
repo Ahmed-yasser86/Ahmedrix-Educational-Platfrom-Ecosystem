@@ -1,0 +1,417 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineCoursesPlatform.Data
+@using OnlineCoursesPlatform.Entities
+@inject UserManager<ApplicationUser> UserManager
+@model Category
+@{
+    ViewData["Title"] = Model.Title;
+    var categoryItems = Model.CategoryItems?.ToList() ?? new List<CategoryItem>();
+}
+
+<div class="container py-5">
+    <!-- Back Button -->
+    <a asp-action="Index" class="btn btn-outline-secondary mb-4">
+        <i class="fas fa-arrow-left me-2"></i> Back to Categories
+    </a>
+
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Category Header -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <h1 class="h3 fw-bold mb-1">@Model.Title</h1>
+                            <p class="text-muted mb-0">Category Details</p>
+                        </div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
+                            <i class="fas fa-tag me-1"></i> Category
+                        </span>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Description -->
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-align-left text-primary me-2"></i> Description
+                            </h5>
+                            <p class="text-muted mb-0">@Model.Description</p>
+                        </div>
+                    }
+
+                    <!-- Thumbnail -->
+                    @if (!string.IsNullOrEmpty(Model.ThumbnailImagePath))
+                    {
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-image text-primary me-2"></i> Thumbnail
+                            </h5>
+                            <img src="@Model.ThumbnailImagePath"
+                                 class="img-fluid rounded"
+                                 alt="@Model.Title"
+                                 style="max-height: 300px; object-fit: cover;">
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Category Items Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="fas fa-list text-primary me-2"></i>
+                        Category Items (@categoryItems.Count)
+                    </h5>
+
+                    @if (categoryItems.Count > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var item in categoryItems)
+                            {
+                                <div class="list-group-item border-0 px-0 py-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="icon-circle bg-light-primary text-primary">
+                                                @if (!string.IsNullOrEmpty(item.MediaTypeId.ToString()))
+                                                {
+                                                    <i class="fas fa-video"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-file"></i>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fw-bold mb-1">@item.Title</h6>
+
+                                            @if (!string.IsNullOrEmpty(item.Description))
+                                            {
+                                                <p class="text-muted small mb-2">@item.Description</p>
+                                            }
+
+                                            <div class="d-flex align-items-center text-muted small">
+                                                <span class="me-3">
+                                                    <i class="fas fa-calendar me-1"></i>
+                                                    @item.DateTimeItemAdded.ToString("dd MMM yyyy")
+                                                </span>
+                                                @if (item.MediaTypeId > 0)
+                                                {
+                                                    <span>
+                                                        <i class="fas fa-film me-1"></i>
+                                                        Media Type: @item.MediaTypeId
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                        @if (item.contentId > 0)
+                                        {
+                                            <div class="flex-shrink-0">
+                                                <span class="badge bg-light text-dark border">
+                                                    Content ID: @item.contentId
+                                                </span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No category items found</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 20px;">
+                <!-- Info Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-info-circle text-primary me-2"></i> Information
+                        </h6>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Category ID</small>
+                            <span class="fw-bold">@Model.Id</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Total Items</small>
+                            <span class="fw-bold">@categoryItems.Count</span>
+                        </div>
+
+                        @if (Model.UserCategory != null && Model.UserCategory.Any())
+                        {
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">Total Subscriptions</small>
+                                <span class="fw-bold">@Model.UserCategory.Count</span>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Last Updated</small>
+                            <span class="fw-bold">
+                                @if (categoryItems.Any())
+                                {
+                                    @categoryItems.Max(i => i.DateTimeItemAdded).ToString("dd MMM yyyy")
+                                }
+                                else
+                                {
+                                    <text>N/A</text>
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-cogs text-primary me-2"></i> Actions
+                        </h6>
+                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button type="button" class="btn btn-primary" id="subscribeBtn">
+                                <i class="fas fa-plus-circle me-2"></i> Subscribe
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" onclick="alert('Please create an account first to be able to subscribe!')">
+                                <i class="fas fa-user-plus me-2"></i> Subscribe
+                            </button>
+                        }
+           <!-- Anti-forgery token form -->
+                        <form id="antiForgeryForm" style="display: none;">
+                            @Html.AntiForgeryToken()
+                        </form>
+
+                        <!-- Loading Spinner -->
+                        <div id="loadingSpinner" class="d-none mt-2">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <small class="text-muted">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                Subscribe to get updates about new items
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Minimal CSS -->
+<style>
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .bg-light-primary {
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+
+    .sticky-top {
+        position: sticky;
+    }
+
+    .list-group-item:first-child {
+        border-top: 0;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: 0;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+<form id="antiForgeryForm" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    $(function () {
+        console.log('=== FINAL WORKING SOLUTION ===');
+
+        var subscribeBtn = $('#subscribeBtn');
+        var categoryId = @Model.Id;
+
+        $.ajax({
+            type: "GET",
+            url: "/Categories/IsUserSubscribed",
+            data: { categoryId: categoryId },
+            success: function(data) {
+                console.log('✅ GET Status Check:', data);
+                updateButton(data.isSubscribed);
+            },
+            error: function(xhr) {
+                console.log('❌ GET Failed:', xhr.status);
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Categories/IsUserSubscribed/" + categoryId,
+                    success: function(data2) {
+                        console.log('✅ GET with route parameter works:', data2);
+                        updateButton(data2.isSubscribed);
+                    },
+                    error: function() {
+                        console.log('❌ Both GET methods failed');
+                    }
+                });
+            }
+        });
+
+        subscribeBtn.click(function(e) {
+            e.preventDefault();
+            console.log('Button clicked for category:', categoryId);
+
+            var originalHtml = subscribeBtn.html();
+            subscribeBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>');
+
+            var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Categories/ToggleSubscription",
+                data: {
+                    __RequestVerificationToken: token,
+                    categoryId: categoryId
+                },
+                success: function(result) {
+                    console.log('✅ POST Success:', result);
+
+                    if (result.success) {
+                        updateButton(result.isSubscribed);
+                        showMessage(result.message, 'success');
+                    } else {
+                        if (result.requiresLogin) {
+                            window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        } else {
+                            showMessage(result.message, 'error');
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    console.log('❌ POST Failed:', xhr.status);
+                    console.log('Response:', xhr.responseText);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Categories/ToggleSubscription/" + categoryId,
+                        data: { __RequestVerificationToken: token },
+                        success: function(result2) {
+                            console.log('✅ POST with route parameter works:', result2);
+                            if (result2.success) {
+                                updateButton(result2.isSubscribed);
+                                showMessage(result2.message, 'success');
+                            }
+                        },
+                        error: function() {
+                            showMessage('Failed to connect to server', 'error');
+                        }
+                    });
+                },
+                complete: function() {
+                    subscribeBtn.prop('disabled', false).html(originalHtml);
+                }
+            });
+        });
+
+        function updateButton(isSubscribed) {
+            if (isSubscribed) {
+                subscribeBtn.html('<i class="fas fa-check me-2"></i> Subscribed')
+                    .removeClass('btn-primary').addClass('btn-success')
+                    .attr('title', 'Click to unsubscribe');
+            } else {
+                subscribeBtn.html('<i class="fas fa-plus-circle me-2"></i> Subscribe')
+                    .removeClass('btn-success').addClass('btn-primary')
+                    .attr('title', 'Click to subscribe');
+            }
+        }
+
+        function showMessage(text, type) {
+            $('.alert-notification').remove();
+
+            var messageHtml = `
+                <div class="alert alert-${type} alert-notification alert-dismissible fade show"
+                     style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${text}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            $('body').append(messageHtml);
+
+            setTimeout(function() {
+                $('.alert-notification').alert('close');
+            }, 3000);
+        }
+
+        window.testSubscription = function() {
+            console.log('=== Testing Subscription API ===');
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                type: "GET",
+                url: "/Categories/IsUserSubscribed",
+                data: { categoryId: categoryId },
+                success: function(d) {
+                    console.log('GET Result:', d);
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Categories/ToggleSubscription",
+                data: {
+                    __RequestVerificationToken: token,
+                    categoryId: categoryId
+                },
+                success: function(r) {
+                    console.log('POST Result:', r);
+                }
+            });
+        };
+
+        console.log('console: testSubscription()');
+    });
+
+</script>

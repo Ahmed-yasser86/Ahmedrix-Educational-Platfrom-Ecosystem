@@ -1,0 +1,123 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineCoursesPlatform.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@using OnlineCoursesPlatform.Entities
+@model IEnumerable<Category>
+
+@if (Model.Count() > 0)
+{
+            <div class="row">
+                @foreach (Category item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
+                            <div class="position-relative overflow-hidden" style="height: 220px;">
+                                <img class="img-fluid w-100 h-100"
+                                     src="@item.ThumbnailImagePath"
+                                     alt="@item.Title"
+                                     style="object-fit: cover;">
+                                <div class="position-absolute top-0 start-0 bg-primary text-white px-3 py-1 m-3 rounded">
+                                    <small><i class="fas fa-robot me-1"></i> AI-Powered</small>
+                                </div>
+                            </div>
+                            <div class="card-body p-4 d-flex flex-column">
+                                <div class="mb-3">
+                                    <h5 class="card-title mb-2">
+                                <a href="@Url.Action("Details", "Categories", new { id = item.Id })"
+                                           class="text-dark text-decoration-none stretched-link">
+                                            @item.Title
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted small mb-3" style="min-height: 60px;">
+                                        @{
+                                            var description = item.Description ?? "";
+                                            if (description.Length > 120)
+                                            {
+                                                @description.Substring(0, 120)
+                                
+                                                <text>...</text>
+                                            }
+                                            else
+                                            {
+                                        @description
+                                    }
+                                }
+                            </p>
+                        </div>
+
+                        <div class="mt-auto pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="text-warning me-2">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <small class="text-muted">4.8</small>
+                                </div>
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+
+                                    <a class="nav-link text-dark" asp-area="Identity"
+                                       data-bs-toggle="modal" data-bs-target="#UserRegistrationModal">
+                                        <i class="fas fa-user-plus mr-1 text-info"></i>Register
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <a href="@Url.Action("Details", "Categories", new { id = item.Id })"
+                                           class="btn btn-primary btn-sm">
+
+                                            Explore Course <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+
+                                }
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.Count() > 6)
+            {
+                <div class="text-center mt-5">
+                    <a href="@Url.Action("Index", "Courses")" class="btn btn-outline-primary btn-lg px-5">
+                        View All Courses <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            }
+     }
+
+<style>
+    .hover-shadow {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        }
+
+    .card-title a:hover {
+        color: #0d6efd !important;
+    }
+
+    .stretched-link::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        content: "";
+    }
+</style>
