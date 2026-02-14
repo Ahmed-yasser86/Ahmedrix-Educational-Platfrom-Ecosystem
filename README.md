@@ -767,6 +767,7 @@ Everything is in containers. If something breaks, I just restart that container.
 
 > **Note:** An AI Agent is currently under development and will be integrated into the ecosystem soon.
 ---
+> **Sample Images:** 
 
 <img width="1366" height="1404" alt="Screenshot 2026-02-15 at 01-27-34 My Learning Dashboard - Online Courses Platform" src="https://github.com/user-attachments/assets/df84ad4c-b78a-4e59-81be-349af7f08d6f" />
 
