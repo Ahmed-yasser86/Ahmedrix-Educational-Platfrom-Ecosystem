@@ -129,6 +129,55 @@ flowchart TB
 
 ---
 
+
+
+```text
+Ahmedrix-Educational-Platform-Ecosystem/
+│
+├── 🎯 Core Platform (ASP.NET Core 8)
+│   ├── Controllers/            → REST API endpoints
+│   ├── Data/                   → Database context & configurations
+│   ├── Entities/               → Domain models
+│   ├── Services/               → Business logic layer
+│   ├── Program.cs              → Application entry point
+│   └── Dockerfile              → Core API container
+│
+├── 💬 Chat Microservice (Node.js + Socket.io)
+│   └── my-secret-chat/
+│       ├── index.js            → Main chat server
+│       ├── Client_Side.js      → Client-side socket logic
+│       ├── database/           → Message storage
+│       ├── haproxy-chat.cfg    → Chat load balancer config
+│       ├── docker-compose.yml  → Full system orchestration
+│       ├── Dockerfile          → Chat container
+│       └── test.html           → Chat test page
+│
+├── 📺 Video Streaming Cluster (Node Media Server)
+│   └── Vedio Streaming servers/
+│       ├── server1/            → NMS instance 1
+│       ├── server2/            → NMS instance 2
+│       ├── server3/            → NMS instance 3
+│       ├── haproxy/            → Video load balancer config
+│       └── dashboard.html      → Streaming dashboard
+│
+├── 📞 WebRTC Platform (One-to-One Video)
+│   └── WebRTC Vedio Platfrom/
+│       ├── server.js           → Signaling server
+│       ├── index.html          → Client interface
+│       ├── js/                 → Frontend logic
+│       ├── www/CSS/            → Styling
+│       └── Dockerfile          → WebRTC container
+│
+└── 🐳 Infrastructure
+    ├── .dockerignore           → Docker exclusions
+    ├── .gitignore              → Git exclusions
+    └── database/               → SQL Server files (.mdf, .ldf)
+
+```
+
+
+
+
 # Table of Contents
 
 1. [Executive Summary](#1-executive-summary)
