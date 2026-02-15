@@ -253,7 +253,7 @@ flowchart TB
 
 # 5. Core Modules
 
-## 5.1 The .NET API — The Brain
+## 5.1 The .NET MVC — The Brain
 
 This is the most important part. Everything goes through here.
 
@@ -464,7 +464,7 @@ sequenceDiagram
     participant Signal as Signaling Server
     participant API as The Boss
 
-    Teacher->>API: "Request private session with Student"
+    Student->>API: "Request private session with Teacher"
     API->>API: "Verify teacher and student exist"
     API-->>Teacher: "Session created. Room ID: 123"
     API-->>Student: "Notification: Teacher requested a session"
