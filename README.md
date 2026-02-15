@@ -14,13 +14,6 @@ Password: Password100!
 > ⚠️ This account is provided for demo purposes only.
 > Do not use these credentials in any production environment.
 
-```
-```
-
-
-⚠️ This account is provided for demo purposes only.
-Do not use these credentials in any production environment
-
 # 🛠 Intro 
 
 The Ahmedrix Ecosystem is built using a modern, polyglot tech stack to ensure each component handles its specific responsibility with maximum efficiency.
