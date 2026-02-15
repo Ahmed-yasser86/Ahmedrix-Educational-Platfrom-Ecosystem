@@ -21,7 +21,7 @@ The Ahmedrix Ecosystem is built using a modern, polyglot tech stack to ensure ea
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| **Core Backend** | ASP.NET Core 8 (C#) | Acting as the Central Data Authority — the only thing that touches the database |
+| **Core Backend** | ASP.NET Core 9 (C#) | Acting as the Central Data Authority — the only thing that touches the database |
 | **Real-Time Engine** | Node.js & Socket.io | Powering the Scalable Chat and WebRTC Signaling |
 | **Database** | Microsoft SQL Server | Primary persistent storage with EF Core as the ORM |
 | **Media Infrastructure** | Node Media Server (NMS) | RTMP/HLS streaming to thousands of viewers |
