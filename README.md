@@ -793,6 +793,9 @@ Everything is in containers. If something breaks, I just restart that container.
 <img width="892" height="509" alt="Screenshot 2026-02-15 at 01-29-42 - Online Courses Platform" src="https://github.com/user-attachments/assets/9662f05b-f93c-44fb-a9c3-2aeb5321718b" />
 
 
+<img width="1350" height="648" alt="image" src="https://github.com/user-attachments/assets/7313132c-4566-401f-a283-f161b13ec3bc" />
+
+
 *— Ahmed, Solo Architect & Developer*
 
 *Built from scratch. Maintained by one person. Ready for thousands.*
