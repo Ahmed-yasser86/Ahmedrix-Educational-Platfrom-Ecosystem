@@ -1,4 +1,3 @@
-﻿// ده بيبقى Controller عادي مش ApiController
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
