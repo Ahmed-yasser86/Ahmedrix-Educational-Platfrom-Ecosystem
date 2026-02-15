@@ -134,12 +134,12 @@ flowchart TB
 ```text
 Ahmedrix-Educational-Platform-Ecosystem/
 │
-├── 🎯 Core Platform (ASP.NET Core 8)
+├── 🎯 Core Platform (ASP.NET Core 9 MVC)
 │   ├── Controllers/            → REST API endpoints
 │   ├── Data/                   → Database context & configurations
 │   ├── Entities/               → Domain models
 │   ├── Services/               → Business logic layer
-│   ├── Program.cs              → Application entry point
+│   ├── Areas                   → diff Areas Within the app like (admin , identity..etc)
 │   └── Dockerfile              → Core API container
 │
 ├── 💬 Chat Microservice (Node.js + Socket.io)
