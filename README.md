@@ -125,7 +125,7 @@ flowchart TB
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| 1.0 | 2024 | Ahmed | Complete system documentation — built and maintained by one developer |
+| 1.0 | 2026 | Ahmed | Complete system documentation — built and maintained by one developer |
 
 ---
 
