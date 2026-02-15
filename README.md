@@ -1,6 +1,16 @@
 
 # Ahmedrix Educational Ecosystem — Complete Technical Documentation
 
+
+## 🛠️ Implementation Notice
+
+All components in this application were built from scratch.  
+No third-party backend services, external APIs, or ready-made platforms were used in the core system implementation.
+
+The architecture, business logic, and infrastructure were fully developed as part of this project.
+
+
+
 ````markdown
 ## 🔐 Admin Demo Credentials
 
