@@ -798,6 +798,9 @@ Everything is in containers. If something breaks, I just restart that container.
 <img width="1348" height="692" alt="image" src="https://github.com/user-attachments/assets/42e563aa-2e29-4730-8d32-d8f3f88fe3fe" />
 
 
+<img width="1038" height="328" alt="image" src="https://github.com/user-attachments/assets/b9ef77df-5ff4-4919-b73e-fbd642c9151b" />
+
+
 *— Ahmed, Solo Architect & Developer*
 
 *Built from scratch. Maintained by one person. Ready for thousands.*
