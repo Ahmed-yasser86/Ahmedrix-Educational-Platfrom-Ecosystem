@@ -1,12 +1,21 @@
 
 # Ahmedrix Educational Ecosystem — Complete Technical Documentation
 
-Admin Demo Credentials
+````markdown
+## 🔐 Admin Demo Credentials
 
 For testing the application, use the following admin account:
 
+```text
 Email: aminakazem91@gmail.com
 Password: Password100!
+````
+
+> ⚠️ This account is provided for demo purposes only.
+> Do not use these credentials in any production environment.
+
+```
+```
 
 
 ⚠️ This account is provided for demo purposes only.
