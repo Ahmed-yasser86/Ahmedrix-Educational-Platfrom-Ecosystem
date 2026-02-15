@@ -733,7 +733,7 @@ Everything is in containers. If something breaks, I just restart that container.
 
 The database is the single source of truth for the entire Ahmedrix ecosystem. Only the .NET API writes to it. All other services (chat, video, WebRTC) read through the API or cache.
 
-## Entity Relationship Diagram
+## Schema Diagram
 
 ```mermaid
 erDiagram
