@@ -33,16 +33,17 @@ Password: Password100!
 
 The Ahmedrix Ecosystem is built using a modern, polyglot tech stack to ensure each component handles its specific responsibility with maximum efficiency.
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **Core Backend** | ASP.NET Core 9 (C#) | Acting as the Central Data Authority — the only thing that touches the database |
-| **Real-Time Engine** | Node.js & Socket.io | Powering the Scalable Chat and WebRTC Signaling |
-| **Database** | Microsoft SQL Server | Primary persistent storage with EF Core as the ORM |
-| **Media Infrastructure** | Node Media Server (NMS) | RTMP/HLS streaming to thousands of viewers |
-| **Real-Time Media** | WebRTC API | Low-latency Peer-to-Peer one-on-one sessions between teacher and student |
-| **Infrastructure** | Docker & Docker Compose | Full-system containerization — one command to start everything |
-| **Load Balancing** | HAProxy | Traffic distribution and high availability for chat and video |
-| **Caching & Messaging** | Redis | Pub/Sub messaging for chat synchronization |
+| Component           | Technology                          | Containers | Purpose                                                                 |
+|--------------------|--------------------------------------|------------|-------------------------------------------------------------------------|
+| Core Backend       | ASP.NET Core 9 (C#)                  | 1          | Acting as the Central Data Authority — the only entity that touches the database |
+| Database           | Microsoft SQL Server                 | 1          | Primary persistent storage with EF Core as the ORM and automated schema setup |
+| Messaging Hub      | Redis ，WebSockets (Alpine)          | 1          | High-speed Pub/Sub messaging for real-time cross-node chat synchronization |
+| Standalone Chat    | JavaScript & WebSockets              | 3          | Distributed nodes (Alpha, Beta, Gamma) designed for high-concurrency messaging |
+| Media Servers      | Node Media Server ，                 | 3          | Scalable cluster for RTMP/HLS ingestion and mass broadcasting to viewers |
+| Video Bridge       | Node.js                              | 1          | Managing internal signaling and media bridging between streaming services |
+| Load Balancing     | HAProxy                              | 2          | Traffic distribution and high availability (Active Health Checks) for chat and video |
+| Real-Time Media    | WebRTC API                           | 1          | Low-latency Peer-to-Peer one-on-one sessions between teacher and student |
+| Infrastructure     | Docker & Docker Compose              | Total: 13  | Full-system containerization — one command to start the entire ecosystem |
 
 ---
 
