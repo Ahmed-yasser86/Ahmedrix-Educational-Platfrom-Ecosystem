@@ -27,6 +27,25 @@ Password: Password100!
 
 ---
 
+
+---
+
+# 0. Executive Summary
+
+The **Ahmedrix Educational Ecosystem** is a complete learning platform I built from scratch. It lets teachers stream live classes, chat with students, and host one-on-one video sessions — all while keeping data safe and handling thousands of users.
+
+**What makes it special:** I'm the only developer. Every line of code, every container, and every architectural decision reflects a single vision — simplicity without sacrificing power.
+
+The platform handles:
+- **Real-time chat** with message history
+- **Live video streaming** to thousands of students
+- **One-on-one video calls** between teacher and student (private sessions)
+- **User management** and course enrollment
+- **All of it** running in containers I can restart with one command
+
+---
+
+
 # Document Control
 
 | Version | Date | Author | Description |
@@ -37,10 +56,10 @@ Password: Password100!
 
 # Table of Contents
 
+0. [Executive Summary](#0-executive-summary)
 1. [Technical Stack](#1-technical-stack)
 2. [Load Balancing & Traffic Orchestration](#2-load-balancing--traffic-orchestration)
 3. [Project Structure](#3-project-structure)
-4. [Executive Summary](#4-executive-summary)
 5. [System at a Glance](#5-system-at-a-glance)
 6. [Architecture Philosophy](#6-architecture-philosophy)
 7. [How Everything Connects](#7-how-everything-connects)
@@ -190,22 +209,6 @@ Ahmedrix-Educational-Platform-Ecosystem/
     └── database/               → SQL Server files (.mdf, .ldf)
 ```
 
----
-
-# 4. Executive Summary
-
-The **Ahmedrix Educational Ecosystem** is a complete learning platform I built from scratch. It lets teachers stream live classes, chat with students, and host one-on-one video sessions — all while keeping data safe and handling thousands of users.
-
-**What makes it special:** I'm the only developer. Every line of code, every container, and every architectural decision reflects a single vision — simplicity without sacrificing power.
-
-The platform handles:
-- **Real-time chat** with message history
-- **Live video streaming** to thousands of students
-- **One-on-one video calls** between teacher and student (private sessions)
-- **User management** and course enrollment
-- **All of it** running in containers I can restart with one command
-
----
 
 # 5. System at a Glance
 
