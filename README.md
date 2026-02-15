@@ -1,6 +1,4 @@
-
 # Ahmedrix Educational Ecosystem — Complete Technical Documentation
-
 
 ## ⚙️ Built From Scratch — No External Dependencies
 
@@ -12,10 +10,10 @@ Every core component — including architecture design, business logic, real-tim
 ❌ No external APIs  
 ❌ No plug-and-play platforms  
 
-Everything you see here was designed and developed intentionally to demonstrate system understanding
+Everything you see here was designed and developed intentionally to demonstrate system understanding.
 
+---
 
-````markdown
 ## 🔐 Admin Demo Credentials
 
 For testing the application, use the following admin account:
@@ -23,35 +21,66 @@ For testing the application, use the following admin account:
 ```text
 Email: aminakazem91@gmail.com
 Password: Password100!
-````
+```
 
-> ⚠️ This account is provided for demo purposes only.
-> Do not use these credentials in any production environment.
---------------------------------------------------------------------
-
-# 🛠 Intro 
-
-The Ahmedrix Ecosystem is built using a modern, polyglot tech stack to ensure each component handles its specific responsibility with maximum efficiency.
-
-| Component           | Technology                          | Containers | Purpose                                                                 |
-|--------------------|--------------------------------------|------------|-------------------------------------------------------------------------|
-| Core Backend       | ASP.NET Core 9 (C#)                  | 1          | Acting as the Central Data Authority — the only entity that touches the database |
-| Database           | Microsoft SQL Server                 | 1          | Primary persistent storage with EF Core as the ORM and automated schema setup |
-| Messaging Hub      | Redis ，WebSockets (Alpine)          | 1          | High-speed Pub/Sub messaging for real-time cross-node chat synchronization |
-| Standalone Chat    | JavaScript & WebSockets              | 3          | Distributed nodes (Alpha, Beta, Gamma) designed for high-concurrency messaging |
-| Media Servers      | Node Media Server ，                 | 3          | Scalable cluster for RTMP/HLS ingestion and mass broadcasting to viewers |
-| Video Bridge       | Node.js                              | 1          | Managing internal signaling and media bridging between streaming services |
-| Load Balancing     | HAProxy                              | 2          | Traffic distribution and high availability (Active Health Checks) for chat and video |
-| Real-Time Media    | WebRTC API                           | 1          | Low-latency Peer-to-Peer one-on-one sessions between teacher and student |
-| Infrastructure     | Docker & Docker Compose              | Total: 13  | Full-system containerization — one command to start the entire ecosystem |
+> ⚠️ This account is provided for demo purposes only. Do not use these credentials in any production environment.
 
 ---
 
-# ⚖️ Load Balancing & Traffic Orchestration
+# Document Control
+
+| Version | Date | Author | Description |
+|---------|------|--------|-------------|
+| 1.0 | 2026 | Ahmed | Complete system documentation — built and maintained by one developer |
+
+---
+
+# Table of Contents
+
+1. [Technical Stack](#1-technical-stack)
+2. [Load Balancing & Traffic Orchestration](#2-load-balancing--traffic-orchestration)
+3. [Project Structure](#3-project-structure)
+4. [Executive Summary](#4-executive-summary)
+5. [System at a Glance](#5-system-at-a-glance)
+6. [Architecture Philosophy](#6-architecture-philosophy)
+7. [How Everything Connects](#7-how-everything-connects)
+8. [Core Modules](#8-core-modules)
+9. [Request Flows](#9-request-flows)
+10. [How Each Part Works Alone](#10-how-each-part-works-alone)
+11. [What Each Component Does](#11-what-each-component-does)
+12. [Why This Architecture Works for One Developer](#12-why-this-architecture-works-for-one-developer)
+13. [Simple Security Model](#13-simple-security-model)
+14. [Deployment](#14-deployment)
+15. [Architectural Decisions](#15-architectural-decisions)
+16. [Database Schema — ER Diagram & Architecture](#16-database-schema--er-diagram--architecture)
+17. [What I'd Tell Another Solo Developer](#17-what-id-tell-another-solo-developer)
+18. [Sample Images](#18-sample-images)
+
+---
+
+# 1. Technical Stack
+
+The Ahmedrix Ecosystem is built using a modern, polyglot tech stack to ensure each component handles its specific responsibility with maximum efficiency.
+
+| Component | Technology | Containers | Purpose |
+|-----------|------------|------------|---------|
+| Core Backend | ASP.NET Core 9 (C#) | 1 | Acting as the Central Data Authority — the only entity that touches the database |
+| Database | Microsoft SQL Server | 1 | Primary persistent storage with EF Core as the ORM and automated schema setup |
+| Messaging Hub | Redis, WebSockets (Alpine) | 1 | High-speed Pub/Sub messaging for real-time cross-node chat synchronization |
+| Standalone Chat | JavaScript & WebSockets | 3 | Distributed nodes (Alpha, Beta, Gamma) designed for high-concurrency messaging |
+| Media Servers | Node Media Server | 3 | Scalable cluster for RTMP/HLS ingestion and mass broadcasting to viewers |
+| Video Bridge | Node.js | 1 | Managing internal signaling and media bridging between streaming services |
+| Load Balancing | HAProxy | 2 | Traffic distribution and high availability (Active Health Checks) for chat and video |
+| Real-Time Media | WebRTC API | 1 | Low-latency Peer-to-Peer one-on-one sessions between teacher and student |
+| Infrastructure | Docker & Docker Compose | Total: 13 | Full-system containerization — one command to start the entire ecosystem |
+
+---
+
+# 2. Load Balancing & Traffic Orchestration
 
 The system uses multiple Load Balancing layers to prevent bottlenecks and ensure 99.9% uptime. Each layer is designed for its specific job.
 
-## 1. Chat Service Load Balancer
+## 2.1 Chat Service Load Balancer
 
 **Handles:** WebSocket connections for real-time messaging
 
@@ -76,9 +105,7 @@ flowchart LR
 
 **Why this matters:** Users stay connected to the same server, but Redis ensures everyone sees all messages anyway.
 
----
-
-## 2. Video Streaming Load Balancer
+## 2.2 Video Streaming Load Balancer
 
 **Handles:** RTMP ingest (teacher streaming) and HLS playback (students watching)
 
@@ -107,29 +134,18 @@ flowchart TB
 
 **Why this matters:** Students always get the best available server. If a server dies, they barely notice the switch.
 
----
-
-# 📊 Load Balancer Summary
+## 2.3 Load Balancer Summary
 
 | Load Balancer | Type | Strategy | What It Handles |
 |---------------|------|----------|-----------------|
 | **Chat LB** | HAProxy | Sticky Sessions (IP Hash) | WebSocket connections, chat messages |
 | **Video LB** | HAProxy | Least Connections | RTMP ingest, HLS playback |
 
----
-
 **Why this matters for a solo developer:** Each load balancer is simple, focused, and does one job well. If something breaks, I know exactly which piece to look at. No magic, no mystery — just solid engineering I can maintain alone.
----
-
-# Document Control
-
-| Version | Date | Author | Description |
-|---------|------|--------|-------------|
-| 1.0 | 2026 | Ahmed | Complete system documentation — built and maintained by one developer |
 
 ---
 
-
+# 3. Project Structure
 
 ```text
 Ahmedrix-Educational-Platform-Ecosystem/
@@ -139,7 +155,7 @@ Ahmedrix-Educational-Platform-Ecosystem/
 │   ├── Data/                   → Database context & configurations
 │   ├── Entities/               → Domain models
 │   ├── Services/               → Business logic layer
-│   ├── Areas                   → diff Areas Within the app like (admin , identity..etc)
+│   ├── Areas/                  → Different Areas within the app (admin, identity..etc)
 │   └── Dockerfile              → Core API container
 │
 ├── 💬 Chat Microservice (Node.js + Socket.io)
@@ -172,43 +188,11 @@ Ahmedrix-Educational-Platform-Ecosystem/
     ├── .dockerignore           → Docker exclusions
     ├── .gitignore              → Git exclusions
     └── database/               → SQL Server files (.mdf, .ldf)
-
 ```
-
-
-
-
-# Table of Contents
-
-1. [Executive Summary](#1-executive-summary)
-2. [System at a Glance](#2-system-at-a-glance)
-3. [Architecture Philosophy](#3-architecture-philosophy)
-4. [How Everything Connects](#4-how-everything-connects)
-5. [Core Modules](#5-core-modules)
-   - 5.1 [The .NET API — The Brain](#51-the-net-api--the-brain)
-   - 5.2 [The Chat System](#52-the-chat-system)
-   - 5.3 [The Video Streaming System](#53-the-video-streaming-system)
-   - 5.4 [The WebRTC System — One-on-One Video](#54-the-webrtc-system--one-on-one-video)
-6. [Request Flows](#6-request-flows)
-   - 6.1 [What Happens When a Teacher Starts Streaming](#61-what-happens-when-a-teacher-starts-streaming)
-   - 6.2 [What Happens When a Student Watches](#62-what-happens-when-a-student-watches)
-   - 6.3 [What Happens When Students Chat](#63-what-happens-when-students-chat)
-   - 6.4 [What Happens During a One-on-One Video Call](#64-what-happens-during-a-one-on-one-video-call)
-7. [How Each Part Works Alone](#7-how-each-part-works-alone)
-   - 7.1 [Chat System — Simple View](#71-chat-system--simple-view)
-   - 7.2 [Video System — Simple View](#72-video-system--simple-view)
-   - 7.3 [The .NET API — The Boss](#73-the-net-api--the-boss)
-   - 7.4 [WebRTC System — One-on-One View](#74-webrtc-system--one-on-one-view)
-8. [What Each Component Does](#8-what-each-component-does)
-9. [Why This Architecture Works for One Developer](#9-why-this-architecture-works-for-one-developer)
-10. [Simple Security Model](#10-simple-security-model)
-11. [Deployment — One Command to Rule Them All](#11-deployment--one-command-to-rule-them-all)
-12. [Architectural Decisions (Why I Built It This Way)](#12-architectural-decisions-why-i-built-it-this-way)
-13. [What I'd Tell Another Solo Developer](#13-what-id-tell-another-solo-developer)
 
 ---
 
-# 1. Executive Summary
+# 4. Executive Summary
 
 The **Ahmedrix Educational Ecosystem** is a complete learning platform I built from scratch. It lets teachers stream live classes, chat with students, and host one-on-one video sessions — all while keeping data safe and handling thousands of users.
 
@@ -223,7 +207,7 @@ The platform handles:
 
 ---
 
-# 2. System at a Glance
+# 5. System at a Glance
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -246,7 +230,7 @@ The platform handles:
 
 ---
 
-# 3. Architecture Philosophy
+# 6. Architecture Philosophy
 
 **"Centralize control, distribute the work, keep it simple."**
 
@@ -260,7 +244,7 @@ The platform handles:
 
 ---
 
-# 4. How Everything Connects
+# 7. How Everything Connects
 
 ```mermaid
 flowchart TB
@@ -315,9 +299,9 @@ flowchart TB
 
 ---
 
-# 5. Core Modules
+# 8. Core Modules
 
-## 5.1 The .NET MVC — The Brain
+## 8.1 The .NET MVC — The Brain
 
 This is the most important part. Everything goes through here.
 
@@ -351,9 +335,7 @@ flowchart TB
 - Sends emails when people sign up
 - Is the **only** thing that touches the database
 
----
-
-## 5.2 The Chat System
+## 8.2 The Chat System
 
 Three chat servers working together so messages never get lost.
 
@@ -378,9 +360,7 @@ flowchart LR
 
 **Why Redis?** So users on Server 1 can talk to users on Server 3. Redis shares messages between all servers instantly.
 
----
-
-## 5.3 The Video Streaming System
+## 8.3 The Video Streaming System
 
 Three video servers so thousands of students can watch at once.
 
@@ -405,9 +385,7 @@ flowchart TB
 
 **What's the Bridge?** It watches all servers and helps balance the load. If one server gets too busy, the Bridge can send new streams to others.
 
----
-
-## 5.4 The WebRTC System — One-on-One Video
+## 8.4 The WebRTC System — One-on-One Video
 
 For private one-on-one video calls between a teacher and a student. No groups, no extra participants — just teacher and student.
 
@@ -438,9 +416,9 @@ flowchart LR
 
 ---
 
-# 6. Request Flows
+# 9. Request Flows
 
-## 6.1 What Happens When a Teacher Starts Streaming
+## 9.1 What Happens When a Teacher Starts Streaming
 
 ```mermaid
 sequenceDiagram
@@ -463,11 +441,7 @@ sequenceDiagram
     Note over Teacher,Worker: Teacher sends video
 ```
 
-**What happened:** Teacher asked to stream → Traffic cop picked the least busy video server → Server checked with the boss → Boss checked the database → Boss said yes → Streaming starts
-
----
-
-## 6.2 What Happens When a Student Watches
+## 9.2 What Happens When a Student Watches
 
 ```mermaid
 sequenceDiagram
@@ -488,11 +462,7 @@ sequenceDiagram
     Worker-->>Student: "Here's the video stream"
 ```
 
-**What happened:** Student wants to watch → Traffic cop picked a server → Server checked with the boss if student enrolled → Boss checked database → Boss said yes → Student watches
-
----
-
-## 6.3 What Happens When Students Chat
+## 9.3 What Happens When Students Chat
 
 ```mermaid
 sequenceDiagram
@@ -515,11 +485,7 @@ sequenceDiagram
     API->>API: "Saved to database"
 ```
 
-**What happened:** Student sends message → Traffic cop routes to Server1 → Server1 tells Redis → Redis tells all servers → Other students get message → Server asks boss to save it forever
-
----
-
-## 6.4 What Happens During a One-on-One Video Call
+## 9.4 What Happens During a One-on-One Video Call
 
 ```mermaid
 sequenceDiagram
@@ -531,9 +497,9 @@ sequenceDiagram
     Student->>API: "Request private session with Teacher"
     API->>API: "Verify teacher and student exist"
     API-->>Teacher: "Session created. Room ID: 123"
-    API-->>Student: "Notification: Teacher requested a session"
+    API-->>Student: "Notification: Session requested"
     
-    Teacher->>Signal: "I'm in room 123, waiting for Student"
+    Teacher->>Signal: "I'm in room 123"
     Student->>Signal: "I want to join room 123"
     
     Signal-->>Teacher: "Student is connecting"
@@ -546,13 +512,11 @@ sequenceDiagram
     Note over Teacher,Student: Nobody else can join — it's private
 ```
 
-**What happened:** Teacher requests private session → Boss verifies and creates room → Signaling server helps them find each other → They connect directly — video never touches my servers → **No third person can ever join this call**
-
 ---
 
-# 7. How Each Part Works Alone
+# 10. How Each Part Works Alone
 
-## 7.1 Chat System — Simple View
+## 10.1 Chat System — Simple View
 
 ```
                     ┌─────────────────┐
@@ -573,15 +537,7 @@ sequenceDiagram
                     └──────────────┘
 ```
 
-**Why this works:**
-- **Multiple servers** → If one crashes, chat keeps working
-- **Redis** → Makes sure everyone sees messages, no matter which server they're on
-- **Traffic cop** → No single server gets too busy
-- **All servers ask the API to save messages** → Nothing gets lost
-
----
-
-## 7.2 Video System — Simple View
+## 10.2 Video System — Simple View
 
 ```
                     ┌─────────────────┐
@@ -601,14 +557,7 @@ sequenceDiagram
         └─────────┘   └─────────┘   └─────────┘
 ```
 
-**Why this works:**
-- **Three servers** → Can handle 900 students instead of 300
-- **Traffic cop** → Spreads students evenly
-- **If one server fails** → Only its 300 students are affected, rest keep watching
-
----
-
-## 7.3 The .NET API — The Boss
+## 10.3 The .NET API — The Boss
 
 ```
                     ┌─────────────────────────┐
@@ -632,14 +581,7 @@ sequenceDiagram
                     └──────────────┘
 ```
 
-**Why this works:** Everything goes through the API. Nobody touches the database directly. This means:
-- No confusion about who has the latest data
-- One place to check for bugs
-- One place to add security
-
----
-
-## 7.4 WebRTC System — One-on-One View
+## 10.4 WebRTC System — One-on-One View
 
 ```
                     ┌─────────────────┐
@@ -663,15 +605,9 @@ sequenceDiagram
         ⚠️ NO THIRD PERSON CAN JOIN ⚠️
 ```
 
-**Why this works:**
-- **Boss creates rooms and verifies** → Only legitimate users get access
-- **Signaling server just helps connect** → No video passes through it
-- **Direct video between teacher and student** → No server bandwidth used
-- **Strictly one-on-one** → Perfect for private tutoring and consultations
-
 ---
 
-# 8. What Each Component Does
+# 11. What Each Component Does
 
 | Component | What It Does | Why I Built It This Way |
 |-----------|--------------|------------------------|
@@ -687,7 +623,7 @@ sequenceDiagram
 
 ---
 
-# 9. Why This Architecture Works for One Developer
+# 12. Why This Architecture Works for One Developer
 
 **I can fix anything** because I built everything. When something breaks at 2 AM, I know exactly where to look.
 
@@ -708,7 +644,7 @@ sequenceDiagram
 
 ---
 
-# 10. Simple Security Model
+# 13. Simple Security Model
 
 ```mermaid
 flowchart LR
@@ -732,7 +668,7 @@ flowchart LR
 
 ---
 
-# 11. Deployment — One Command to Rule Them All
+# 14. Deployment
 
 ```bash
 # Start everything
@@ -757,64 +693,253 @@ Everything is in containers. If something breaks, I just restart that container.
 
 ---
 
-# 12. Architectural Decisions (Why I Built It This Way)
+# 15. Architectural Decisions
 
 ## Decision 1: One API to Rule Them All
-
-**The problem:** I need multiple services (chat, video, web) but data must stay consistent.
-
-**My solution:** Only the .NET API writes to the database. Everything else asks the API.
-
-**Why:** If every service wrote to the database directly, they'd conflict. I'd spend all my time fixing data corruption. Now, one source of truth.
+**The problem:** I need multiple services but data must stay consistent.
+**My solution:** Only the .NET API writes to the database.
+**Why:** One source of truth eliminates data corruption.
 
 ## Decision 2: Multiple Chat Servers
-
 **The problem:** One chat server can handle only so many connections.
-
-**My solution:** Three chat servers with a load balancer in front.
-
-**Why:** If one crashes, two still work. If traffic grows, I add more. Redis makes sure they all stay in sync.
+**My solution:** Three chat servers with a load balancer.
+**Why:** If one crashes, two still work. Redis keeps them in sync.
 
 ## Decision 3: Multiple Video Servers
-
-**The problem:** Video streaming is CPU-heavy. One server can't handle thousands of viewers.
-
-**My solution:** Three video servers. Load balancer sends viewers to the least busy one.
-
-**Why:** Each server handles its share. 3 servers = 3x the viewers. Need more? Add servers.
+**The problem:** Video streaming is CPU-heavy.
+**My solution:** Three video servers with load balancing.
+**Why:** Each server handles its share. 3 servers = 3x the viewers.
 
 ## Decision 4: Redis for Chat Sync
-
-**The problem:** User on Server 1 can't see messages from User on Server 2.
-
-**My solution:** Redis Pub/Sub. Every message goes to Redis, Redis sends to all servers.
-
+**The problem:** Users on different servers can't see each other's messages.
+**My solution:** Redis Pub/Sub.
 **Why:** Simple. Fast. Works.
 
 ## Decision 5: WebRTC for One-on-One Video Calls
-
-**The problem:** Server-based video calling would cost a fortune in bandwidth. Group calls would add complexity.
-
-**My solution:** WebRTC with strict one-on-one only. Servers just help set up the call, then video goes peer-to-peer.
-
-**Why:** 
-- Virtually unlimited calls — students connect directly
-- My servers do almost nothing
-- **Simple to implement and maintain**
-- Perfect for private tutoring and consultations
-- No complex group call logic to debug
+**The problem:** Server-based video calling costs too much bandwidth.
+**My solution:** WebRTC with strict one-on-one only.
+**Why:** Direct peer-to-peer video. No server bandwidth used.
 
 ## Decision 6: Docker for Everything
-
-**The problem:** Setting up servers manually is error-prone and time-consuming.
-
-**My solution:** Everything in Docker. One file describes the whole system.
-
-**Why:** One command to start. One command to restart. Works the same everywhere.
+**The problem:** Manual server setup is error-prone.
+**My solution:** Everything in Docker.
+**Why:** One command to start. Works the same everywhere.
 
 ---
 
-# 13. What I'd Tell Another Solo Developer
+# 16. Database Schema — ER Diagram & Architecture
+
+## Overview
+
+The database is the single source of truth for the entire Ahmedrix ecosystem. Only the .NET API writes to it. All other services (chat, video, WebRTC) read through the API or cache.
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    AspNetUsers ||--o{ UserCategories : has
+    AspNetUsers ||--o{ Appointments : books
+    AspNetUsers ||--o{ ChatMessages : sends
+    
+    Instructors ||--o{ Categories : creates
+    Instructors ||--o{ LiveSessions : hosts
+    Instructors ||--o{ Appointments : receives
+    
+    Categories ||--o{ CategoryItems : contains
+    Categories ||--o{ UserCategories : enrolled_by
+    Categories ||--o{ ChatMessages : belongs_to
+    Categories ||--o{ LiveSessions : streams_in
+    
+    CategoryItems ||--o{ Contents : has
+    CategoryItems ||--|| MediaTypes : uses
+    
+    AspNetUsers {
+        string Id PK
+        string UserName
+        string Email
+        string FirstName
+        string LastName
+        string Address1
+        string Address2
+        string PostCode
+        bool EmailConfirmed
+    }
+    
+    Instructors {
+        int Id PK
+        string Name
+        string Email
+        string Description
+        string ProfileImagePath
+    }
+    
+    Categories {
+        int Id PK
+        string Title
+        string Description
+        string ThumbnailImagePath
+        int InstructorId FK
+    }
+    
+    CategoryItems {
+        int Id PK
+        string Title
+        string Description
+        datetime DateTimeItemAdded
+        int CategoryId FK
+        int MediaTypeId FK
+    }
+    
+    Contents {
+        int Id PK
+        string Title
+        string HTMLContent
+        string VideoLink
+        int CategoryItemId FK
+    }
+    
+    MediaTypes {
+        int Id PK
+        string Title
+        string ImagePath
+    }
+    
+    LiveSessions {
+        int Id PK
+        string Title
+        string StreamKey
+        datetime StartTime
+        datetime EndTime
+        bool IsActive
+        bool IsDeleted
+        int InstructorId FK
+        int CategoryId FK
+    }
+    
+    ChatMessages {
+        int Id PK
+        string Content
+        datetime Timestamp
+        string UserId FK
+        int CategoryId FK
+    }
+    
+    Appointments {
+        int Id PK
+        datetime AppointmentDate
+        string Notes
+        string RoomUrl
+        string Status
+        datetime CreatedAt
+        string StudentId FK
+        int InstructorId FK
+    }
+    
+    UserCategories {
+        int Id PK
+        string UserId FK
+        int CategoryId FK
+    }
+    
+    AspNetRoles {
+        string Id PK
+        string Name
+        string NormalizedName
+    }
+    
+    AspNetUserRoles {
+        string UserId FK
+        string RoleId FK
+    }
+```
+
+## Core Tables Explained
+
+| Table | Purpose | Key Relationships |
+|-------|---------|-------------------|
+| **AspNetUsers** | User accounts (students) | Links to enrollments, messages, appointments |
+| **Instructors** | Teacher profiles | Owns categories and live sessions |
+| **Categories** | Courses/classes | Container for learning materials |
+| **CategoryItems** | Modules within a course | Links to actual content |
+| **Contents** | The actual lesson material | HTML, video links |
+| **LiveSessions** | Active/recorded streams | Tracks stream keys and status |
+| **ChatMessages** | Course chat history | Persisted from Redis |
+| **Appointments** | One-on-one video sessions | Stores room URLs and status |
+| **UserCategories** | Many-to-many: users enrolled in courses | Junction table |
+
+## Key Design Decisions
+
+**Single Source of Truth**
+Only the .NET API writes to these tables. Chat servers, video servers, and WebRTC all sync through the API.
+
+**Identity Integration**
+AspNetUsers, AspNetRoles, AspNetUserRoles come from ASP.NET Core Identity — handles authentication out of the box.
+
+**Soft Deletes**
+LiveSessions uses `IsDeleted` flag instead of hard deletion. History is preserved.
+
+**Audit Fields**
+CreatedAt, StartTime, EndTime, Timestamp fields track when things happen.
+
+**Room URLs**
+Appointments stores WebRTC room URLs for one-on-one sessions — created by API, used by signaling server.
+
+## Data Flow Through the System
+
+```mermaid
+flowchart LR
+    subgraph Sources
+        User["User Input"]
+        Chat["Chat Messages"]
+        Stream["Stream Metadata"]
+    end
+    
+    subgraph API["🎯 .NET API (Only Writer)"]
+        Validate["Validation"]
+        Save["Persistence"]
+    end
+    
+    subgraph DB["🗄️ SQL Server"]
+        Users[(Users)]
+        Courses[(Courses)]
+        Messages[(Messages)]
+        Sessions[(LiveSessions)]
+    end
+    
+    subgraph Consumers
+        ChatNodes["Chat Servers<br/>(Read via API)"]
+        VideoNodes["Video Servers<br/>(Read via API)"]
+        WebRTC["WebRTC Server<br/>(Read via API)"]
+    end
+    
+    User --> API
+    Chat --> API
+    Stream --> API
+    
+    API --> Validate
+    Validate --> Save
+    Save --> DB
+    
+    DB -.-> ChatNodes
+    DB -.-> VideoNodes
+    DB -.-> WebRTC
+```
+
+## File Structure
+
+The database files are mounted as volumes in Docker:
+
+```
+/database/
+├── aspnet-OnlineCoursesPlatform.mdf      # Primary data file (73 MB)
+└── aspnet-OnlineCoursesPlatform_log.ldf  # Transaction log (8 MB)
+```
+
+These files persist even when containers are destroyed — data survives restarts.
+
+---
+
+# 17. What I'd Tell Another Solo Developer
 
 **If you're building something alone:**
 
@@ -832,38 +957,27 @@ Everything is in containers. If something breaks, I just restart that container.
 
 ---
 
-# The End Result
-
-**A platform that:**
-- ✅ Handles thousands of students
-- ✅ Keeps chat history forever
-- ✅ Streams video smoothly to hundreds at once
-- ✅ Enables private one-on-one video sessions
-- ✅ Survives failures (if one server dies, others keep working)
-
-> **Note:** An AI Agent is currently under development and will be integrated into the ecosystem soon.
----
-> **Sample Images:** 
+# 18. Sample Images
 
 <img width="1366" height="1404" alt="Screenshot 2026-02-15 at 01-27-34 My Learning Dashboard - Online Courses Platform" src="https://github.com/user-attachments/assets/df84ad4c-b78a-4e59-81be-349af7f08d6f" />
 
-
 <img width="1363" height="881" alt="Screenshot 2026-02-15 at 01-28-40 Categories Management - Admin Dashboard" src="https://github.com/user-attachments/assets/b75d7389-bfa9-4dfa-9f4e-56b4a326507c" />
-
 
 <img width="1351" height="1496" alt="Screenshot 2026-02-15 at 01-30-36 C# - Online Courses Platform" src="https://github.com/user-attachments/assets/9db342aa-e31d-497c-907f-afeb041e4882" />
 
-
 <img width="892" height="509" alt="Screenshot 2026-02-15 at 01-29-42 - Online Courses Platform" src="https://github.com/user-attachments/assets/9662f05b-f93c-44fb-a9c3-2aeb5321718b" />
-
 
 <img width="1350" height="648" alt="image" src="https://github.com/user-attachments/assets/7313132c-4566-401f-a283-f161b13ec3bc" />
 
 <img width="1348" height="692" alt="image" src="https://github.com/user-attachments/assets/42e563aa-2e29-4730-8d32-d8f3f88fe3fe" />
 
-
 <img width="1038" height="328" alt="image" src="https://github.com/user-attachments/assets/b9ef77df-5ff4-4919-b73e-fbd642c9151b" />
 
+---
+
+> **Note:** An AI Agent is currently under development and will be integrated into the ecosystem soon.
+
+---
 
 *— Ahmed, Solo Architect & Developer*
 
