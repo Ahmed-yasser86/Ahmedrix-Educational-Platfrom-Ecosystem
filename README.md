@@ -762,11 +762,9 @@ Everything is in containers. If something breaks, I just restart that container.
 
 4. **Load balancers are your friend** — They prevent outages and make scaling easy.
 
-5. **Know your limits** — I chose one-on-one video instead of group calls because it's simpler to build and maintain. That's OK.
+5. **Document as you go** — This document is my memory. Six months from now, I'll thank myself.
 
-6. **Document as you go** — This document is my memory. Six months from now, I'll thank myself.
-
-7. **Accept trade-offs** — I don't have Kubernetes. I don't have service mesh. I don't have group video calls. But I have a system I can maintain alone, and it works.
+6. **Accept trade-offs** — I don't have Kubernetes. I don't have service mesh. I don't have group video calls. But I have a system I can maintain alone, and it works.
 
 ---
 
