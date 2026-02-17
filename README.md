@@ -675,7 +675,12 @@ flowchart LR
 
 ```bash
 # Start everything
+docker-compose up --build
+
+
+or
 docker-compose up -d
+
 
 # See what's happening
 docker-compose logs -f
