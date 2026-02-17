@@ -28,7 +28,7 @@ services:
 
   dotnet-api:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform"
+      context: .
       dockerfile: Dockerfile
     container_name: dotnet_backend
     restart: always
@@ -49,11 +49,9 @@ services:
     networks:
       - chat_network
 
-  #  Video Streaming Infrastructure 
-
   video-bridge:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server1"
+      context: ./Vedio Streaming servers/server1
       dockerfile: Dockerfile
     container_name: video_bridge
     command: node bridge.js
@@ -65,7 +63,7 @@ services:
 
   nms-server1:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server1"
+      context: ./Vedio Streaming servers/server1
       dockerfile: Dockerfile
     container_name: nms_server1
     command: node server1.js
@@ -78,7 +76,7 @@ services:
 
   nms-server2:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server2"
+      context: ./Vedio Streaming servers/server2
       dockerfile: Dockerfile
     container_name: nms_server2
     command: node server2.js
@@ -91,7 +89,7 @@ services:
 
   nms-server3:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/server3"
+      context: ./Vedio Streaming servers/server3
       dockerfile: Dockerfile
     container_name: nms_server3
     command: node server3.js
@@ -107,7 +105,7 @@ services:
     container_name: video_lb
     restart: always
     volumes:
-      - "C:/Users/DELL/Music/OnlineCoursesPlatform/Vedio Streaming servers/haproxy/haproxy-video.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+      - ./Vedio Streaming servers/haproxy/haproxy-video.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - "20000:20000"
     depends_on:
@@ -117,11 +115,9 @@ services:
     networks:
       - chat_network
 
-  # Chat Microservices 
-
   chat-app-1:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      context: ./my-secret-chat
       dockerfile: Dockerfile
     container_name: my-secret-chat-chat-app-1-1
     restart: always
@@ -138,7 +134,7 @@ services:
 
   chat-app-2:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      context: ./my-secret-chat
       dockerfile: Dockerfile
     container_name: my-secret-chat-chat-app-2-1
     restart: always
@@ -155,7 +151,7 @@ services:
 
   chat-app-3:
     build: 
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat"
+      context: ./my-secret-chat
       dockerfile: Dockerfile
     container_name: my-secret-chat-chat-app-3-1
     restart: always
@@ -175,7 +171,7 @@ services:
     container_name: chat_lb
     restart: always
     volumes:
-      - "C:/Users/DELL/Music/OnlineCoursesPlatform/my-secret-chat/haproxy-chat.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+      - ./my-secret-chat/haproxy-chat.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - "54321:9999"  
       - "61234:7777"  
@@ -188,7 +184,7 @@ services:
 
   webrtc-proto:
     build:
-      context: "C:/Users/DELL/Music/OnlineCoursesPlatform/WebRTC Vedio Platfrom"
+      context: ./WebRTC Vedio Platfrom
       dockerfile: Dockerfile
     container_name: webrtc_proto_app
     restart: always
