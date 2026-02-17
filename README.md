@@ -695,7 +695,7 @@ docker-compose down
 After starting the containers for the first time, you must manually execute the following command to attach the .mdf and .ldf files to the SQL Server instance:
 Bash
 
-docker exec -it sql_server_container /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -C -i /var/opt/mssql/backup/setup.sql
+docker exec -it sql_server_container /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourPass@8888 -C -i /var/opt/mssql/backup/setup.sql
 
 Technical Notes:
 
