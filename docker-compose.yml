@@ -16,10 +16,10 @@ services:
       /bin/bash -c "
       /opt/mssql/bin/sqlservr & 
       sleep 90; 
-      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -C -i /var/opt/mssql/backup/setup.sql;
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourPass@8888 -C -i /var/opt/mssql/backup/setup.sql;
       wait"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -Q 'SELECT 1' -C"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourPass@8888 -Q 'SELECT 1' -C"]
       interval: 10s
       timeout: 10s
       retries: 25
@@ -199,3 +199,4 @@ networks:
   chat_network:
 
     driver: bridge
+
