@@ -38,7 +38,7 @@ services:
     ports:
       - "5076:5076"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db;Database=aspnet-OnlineCoursesPlatform;User Id=sa;Password=Ahmed@862205;MultipleActiveResultSets=True;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=db;Database=aspnet-OnlineCoursesPlatform;User Id=sa;Password=YourPass@8888;MultipleActiveResultSets=True;TrustServerCertificate=True;
     networks:
       - chat_network
 
@@ -199,4 +199,5 @@ networks:
   chat_network:
 
     driver: bridge
+
 
