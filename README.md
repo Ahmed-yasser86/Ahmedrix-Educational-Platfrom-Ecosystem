@@ -685,11 +685,6 @@ docker-compose up -d
 # See what's happening
 docker-compose logs -f
 
-# Add more chat servers
-docker-compose up --scale chat-app-1=5 -d
-
-# Restart just the video system
-docker-compose restart video-lb nms-server1 nms-server2 nms-server3
 
 # Stop everything
 docker-compose down
