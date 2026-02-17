@@ -126,7 +126,7 @@ flowchart LR
 
 ## 2.2 Video Streaming Load Balancer
 
-**Handles:** RTMP ingest (teacher streaming) and HLS playback (students watching)
+**Handles:** RTMP ingest (teacher streaming) and playback (students watching)
 
 ```mermaid
 flowchart TB
