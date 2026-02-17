@@ -699,7 +699,7 @@ docker exec -it sql_server_container /opt/mssql-tools18/bin/sqlcmd -S localhost 
 
 Technical Notes:
 
-    Credentials: This command uses the default system administrator (sa) password defined in the docker-compose.yml file (Ahmed@862205).
+    Credentials: This command uses the default system administrator (sa) password defined in the docker-compose.yml file (YourPass@8888 ).
 
     Timing: Run this command only after the SQL container status shows as Healthy (usually takes 30-60 seconds after the first boot).
 
