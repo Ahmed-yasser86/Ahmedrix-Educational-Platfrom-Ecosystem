@@ -171,7 +171,6 @@ Ahmedrix-Educational-Platform-Ecosystem/
 │
 ├── 🎯 Core Platform (ASP.NET Core 9 MVC)
 │   ├── Controllers/            → REST API endpoints
-│   ├── Data/                   → Database context & configurations
 │   ├── Entities/               → Domain models
 │   ├── Services/               → Business logic layer
 │   ├── Areas/                  → Different Areas within the app (admin, identity..etc)
@@ -183,9 +182,7 @@ Ahmedrix-Educational-Platform-Ecosystem/
 │       ├── Client_Side.js      → Client-side socket logic
 │       ├── database/           → Message storage
 │       ├── haproxy-chat.cfg    → Chat load balancer config
-│       ├── docker-compose.yml  → Full system orchestration
-│       ├── Dockerfile          → Chat container
-│       └── test.html           → Chat test page
+│       └── Dockerfile          → Chat container
 │
 ├── 📺 Video Streaming Cluster (Node Media Server)
 │   └── Vedio Streaming servers/
@@ -205,8 +202,10 @@ Ahmedrix-Educational-Platform-Ecosystem/
 │
 └── 🐳 Infrastructure
     ├── .dockerignore           → Docker exclusions
-    ├── .gitignore              → Git exclusions
+    ├── .gitignore           → Git exclusions
+    ├── docker-compose.yml  → Full system orchestration
     └── database/               → SQL Server files (.mdf, .ldf)
+   
 ```
 
 
