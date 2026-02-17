@@ -9,7 +9,7 @@ services:
       - "1433:1433"
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Ahmed@862205
+      - MSSQL_SA_PASSWORD=YourPass@8888
     volumes:
       - ./database:/var/opt/mssql/backup
     entrypoint: >
@@ -197,4 +197,5 @@ services:
 
 networks:
   chat_network:
+
     driver: bridge
