@@ -688,7 +688,28 @@ docker-compose restart video-lb nms-server1 nms-server2 nms-server3
 
 # Stop everything
 docker-compose down
+
+
+⚠️ Important: Database Attachment (First-Time Setup)
+
+After starting the containers for the first time, you must manually execute the following command to attach the .mdf and .ldf files to the SQL Server instance:
+Bash
+
+docker exec -it sql_server_container /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ahmed@862205 -C -i /var/opt/mssql/backup/setup.sql
+
+Technical Notes:
+
+    Credentials: This command uses the default system administrator (sa) password defined in the docker-compose.yml file (Ahmed@862205).
+
+    Timing: Run this command only after the SQL container status shows as Healthy (usually takes 30-60 seconds after the first boot).
+
+    Persistence: You only need to run this once. The database will remain attached even if you stop and restart the containers.
+
+    Configuration: If you modify the MSSQL_SA_PASSWORD in your environment variables, ensure you update it in this command as well.
+
 ```
+
+
 
 Everything is in containers. If something breaks, I just restart that container. No reinstalling. No configuration drift. No "it works on my machine."
 
