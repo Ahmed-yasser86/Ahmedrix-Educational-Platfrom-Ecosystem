@@ -174,7 +174,7 @@ flowchart TB
 | Load Balancer | Type | Strategy | What It Handles |
 |---------------|------|----------|-----------------|
 | **Chat LB** | HAProxy | Sticky Sessions (IP Hash) | WebSocket connections, chat messages |
-| **Video LB** | HAProxy | Least Connections | RTMP ingest, HLS playback |
+| **Video LB** | HAProxy | Least Connections | RTMP ingest |
 
 **Why this matters for a solo developer:** Each load balancer is simple, focused, and does one job well. If something breaks, I know exactly which piece to look at. No magic, no mystery — just solid engineering I can maintain alone.
 
