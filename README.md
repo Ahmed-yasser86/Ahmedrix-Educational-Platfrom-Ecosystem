@@ -27,16 +27,19 @@ Password: Password100!
 
 ---
 
-
+<div align="center">
+  <h2>📺 Project Demo & Walkthrough</h2>
+  <br>
+  <video width="100%" controls autoplay muted loop>
+    <source src="https://github.com/Ahmed-yasser86/My-Assets/blob/main/2026-02-19%2009-06-35.mp4?raw=true" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <p><i>A comprehensive walkthrough of the Ahmedrix Educational Platform Ecosystem</i></p>
+</div>
 ---
 
 
-<div align="center">
-  <h3>🎥 Project Showcase</h3>
-  <video src="https://github.com/Ahmed-yasser86/My-Assets/raw/main/2026-02-19%2009-06-35.mp4" width="100%" controls>
-    Your browser does not support the video tag.
-  </video>
-</div>
+
 
 # 0. Executive Summary
 
