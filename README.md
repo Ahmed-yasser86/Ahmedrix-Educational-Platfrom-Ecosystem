@@ -377,18 +377,19 @@ flowchart LR
 **Why three servers?** If one crashes, chat keeps working. If we get more users, I can add more servers.
 
 **Why Redis?** So users on Server 1 can talk to users on Server 3. Redis shares messages between all servers instantly.
----
+
+
 ## 📺 Project Demo & Walkthrough
 <div align="center">
   <h3>🚀 Real-Time Chat System — Technical Breakdown</h3>
   <a href="https://www.youtube.com/watch?v=I_NJTbcIkCE">
-    <img src="https://img.youtube.com/vi/I_NJTbcIkCE/maxresdefault.jpg" alt="Real-Time Chat System Walkthrough" width="900" style="border-radius:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    <img src="https://img.youtube.com/vi/I_NJTbcIkCE/sddefault.jpg" alt="Real-Time Chat System Walkthrough" width="900" style="border-radius:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
     <br>
     <br>
     <b>▶️ Click to watch the technical architecture walkthrough and live chat demonstration.</b>
   </a>
 </div>
----
+
 ## 8.3 The Video Streaming System
 
 Three video servers so thousands of students can watch at once.
