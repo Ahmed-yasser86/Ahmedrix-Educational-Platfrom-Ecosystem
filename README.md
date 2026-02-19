@@ -30,6 +30,14 @@ Password: Password100!
 
 ---
 
+
+<div align="center">
+  <h3>🎥 Project Showcase</h3>
+  <video src="https://github.com/Ahmed-yasser86/My-Assets/raw/main/2026-02-19%2009-06-35.mp4" width="100%" controls>
+    Your browser does not support the video tag.
+  </video>
+</div>
+
 # 0. Executive Summary
 
 The **Ahmedrix Educational Ecosystem** is a complete learning platform I built from scratch. It lets teachers stream live classes, chat with students, and host one-on-one video sessions — all while keeping data safe and handling thousands of users.
