@@ -1,5 +1,14 @@
 # Ahmedrix Educational Ecosystem — Complete Technical Documentation
 
+
+## ⚠️ Before Running the Project
+
+Before downloading or running the project, please review the **updated Deployment section** carefully.
+
+It includes the correct setup steps and database attachment instructions.
+
+Skipping these steps may lead to technical issues or runtime errors.
+
 ## ⚙️ Built From Scratch — No External Dependencies
 
 This application was engineered entirely from the ground up.
